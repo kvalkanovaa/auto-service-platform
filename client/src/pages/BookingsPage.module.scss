@@ -1,0 +1,180 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.bookings {
+  &__header {
+    margin-bottom: $space-8;
+  }
+
+  &__title {
+    font-size: $text-4xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-md;
+    color: $color-muted;
+    margin-top: $space-1;
+    margin-bottom: 0;
+  }
+
+  &__loading {
+    @apply flex justify-center;
+    padding: 80px 0;
+  }
+
+  &__spinner {
+    @include spinner;
+  }
+
+  // ── Empty state ─────────────────────────────────────────────────────────────
+  &__empty {
+    @include empty-state;
+  }
+
+  &__empty-icon {
+    @apply flex items-center justify-center;
+    width: 64px;
+    height: 64px;
+    background: #f1f5f9;
+    border-radius: 16px;
+    margin-bottom: $space-4;
+  }
+
+  &__empty-title {
+    font-size: $text-xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-2;
+  }
+
+  &__empty-text {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0 0 $space-6;
+  }
+
+  &__empty-link {
+    @include btn-primary-dark;
+    padding: 10px 20px;
+  }
+
+  // ── Booking list ────────────────────────────────────────────────────────────
+  &__list {
+    @apply flex flex-col;
+    gap: 12px;
+  }
+
+  // ── Booking card ────────────────────────────────────────────────────────────
+  &__card {
+    @include card;
+    padding: 20px $space-6;
+  }
+
+  &__card-inner {
+    @apply flex items-start justify-between;
+    gap: $space-4;
+
+    @media (max-width: $bp-sm) {
+      flex-direction: column;
+    }
+  }
+
+  &__card-left {
+    flex: 1;
+  }
+
+  &__status-wrap {
+    margin-bottom: $space-2;
+  }
+
+  &__status-badge {
+    font-size: 12px;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: $radius-full;
+
+    &--pending {
+      background: $color-warning-bg;
+      color: $color-warning-text;
+    }
+
+    &--confirmed {
+      background: $color-success-bg;
+      color: $color-success-text;
+    }
+
+    &--cancelled {
+      background: $color-danger-bg;
+      color: $color-danger-text;
+    }
+
+    &--completed {
+      background: #f1f5f9;
+      color: #475569;
+    }
+  }
+
+  &__service-name {
+    font-size: 17px;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-1;
+  }
+
+  &__location {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0 0 10px;
+  }
+
+  &__meta-row {
+    @apply flex items-center;
+    gap: $space-4;
+    font-size: $text-base;
+    color: $color-text-secondary;
+
+    @media (max-width: $bp-sm) {
+      flex-direction: column;
+      align-items: flex-start;
+      gap: $space-1;
+    }
+  }
+
+  &__meta-time {
+    @apply flex items-center;
+    gap: 6px;
+  }
+
+  &__meta-separator {
+    color: #cbd5e1;
+
+    @media (max-width: $bp-sm) {
+      display: none;
+    }
+  }
+
+  &__note {
+    font-size: $text-sm;
+    color: $color-subtle;
+    margin-top: 6px;
+    margin-bottom: 0;
+  }
+
+  &__cancel-btn {
+    @include btn-danger;
+    flex-shrink: 0;
+    padding: 8px 14px;
+
+    @media (max-width: $bp-sm) {
+      width: 100%;
+      justify-content: center;
+    }
+  }
+}

@@ -1,0 +1,162 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+// ─── Page wrapper ─────────────────────────────────────────────────────────────
+.login {
+  @apply flex items-center justify-center min-h-screen;
+  background: $color-bg;
+  padding: $space-4;
+  font-family: $font-family;
+
+  // ─── Inner container (max-width column) ────────────────────────────────────
+  &__container {
+    @apply w-full;
+    max-width: 420px;
+  }
+
+  // ─── Logo row ──────────────────────────────────────────────────────────────
+  &__logo {
+    @apply flex items-center justify-center;
+    gap: 10px;
+    margin-bottom: $space-8;
+  }
+
+  &__logo-icon {
+    @apply flex items-center justify-center;
+    width: 40px;
+    height: 40px;
+    background: $color-primary;
+    border-radius: 12px;
+    flex-shrink: 0;
+  }
+
+  &__logo-name {
+    font-size: $text-2xl;
+    font-weight: 700;
+    color: $color-primary;
+    letter-spacing: -0.3px;
+  }
+
+  // ─── Card ──────────────────────────────────────────────────────────────────
+  &__card {
+    @include card($radius-2xl);
+    box-shadow: 0 4px 24px rgba(0, 0, 0, 0.06);
+    padding: $space-8;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-1;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0 0 28px;
+  }
+
+  // ─── Success notice ────────────────────────────────────────────────────────
+  &__success {
+    background: $color-success-bg;
+    border: 1px solid $color-success-border;
+    border-radius: $radius-md;
+    padding: 12px 14px;
+    font-size: $text-base;
+    color: $color-success-text;
+    margin-bottom: 20px;
+  }
+
+  // ─── Form fields ───────────────────────────────────────────────────────────
+  &__field {
+    margin-bottom: $space-4;
+
+    &--last {
+      margin-bottom: $space-5;
+    }
+  }
+
+  &__label-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-bottom: $space-1;
+  }
+
+  &__forgot {
+    font-size: $text-sm;
+    color: $color-primary;
+    font-weight: 500;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__label {
+    @include form-label;
+    margin-bottom: 0;
+  }
+
+  &__input {
+    @include form-input;
+    padding: 11px 14px;
+  }
+
+  &__error {
+    font-size: $text-xs;
+    color: #ef4444;
+    margin-top: $space-1;
+  }
+
+  // ─── Root error alert ──────────────────────────────────────────────────────
+  &__alert {
+    background: $color-danger-bg;
+    border: 1px solid $color-danger-border;
+    border-radius: $radius-md;
+    padding: 12px 14px;
+    font-size: $text-base;
+    color: $color-danger-text;
+    margin-bottom: $space-4;
+  }
+
+  // ─── Submit button ─────────────────────────────────────────────────────────
+  &__submit {
+    @include btn-primary;
+    @apply w-full justify-center;
+    padding: 12px;
+    font-size: $text-md;
+    font-weight: 700;
+
+    &--loading {
+      background: $color-subtle;
+      box-shadow: none;
+      cursor: not-allowed;
+
+      &:hover {
+        opacity: 1;
+        transform: none;
+      }
+    }
+  }
+
+  // ─── Footer link ───────────────────────────────────────────────────────────
+  &__footer {
+    text-align: center;
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: $space-6;
+  }
+
+  &__link {
+    color: $color-primary;
+    font-weight: 600;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+}

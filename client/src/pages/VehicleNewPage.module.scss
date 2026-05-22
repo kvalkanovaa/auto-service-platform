@@ -1,0 +1,134 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.page {
+  max-width: 640px;
+}
+
+// ── Header ───────────────────────────────────────────────────────────────────
+
+.header {
+  @apply flex items-center;
+  gap: $space-3;
+  margin-bottom: 28px;
+
+  &__back {
+    @include back-btn;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: 2px;
+    margin-bottom: 0;
+  }
+}
+
+// ── Card ─────────────────────────────────────────────────────────────────────
+
+.card {
+  @include card;
+  padding: 28px;
+}
+
+// ── Image upload ─────────────────────────────────────────────────────────────
+
+.image-upload {
+  margin-bottom: $space-6;
+}
+
+// ── Form grid ────────────────────────────────────────────────────────────────
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+  margin-bottom: $space-4;
+}
+
+// ── Field ────────────────────────────────────────────────────────────────────
+
+.field {
+  &__label {
+    @include form-label;
+  }
+
+  &__input,
+  &__select {
+    @include form-input;
+  }
+
+  &__error {
+    font-size: $text-xs;
+    color: #ef4444;
+    margin-top: $space-1;
+    margin-bottom: 0;
+  }
+}
+
+// ── Root error ───────────────────────────────────────────────────────────────
+
+.root-error {
+  background: $color-danger-bg;
+  border: 1px solid $color-danger-border;
+  border-radius: $radius-md;
+  padding: 12px 14px;
+  font-size: $text-base;
+  color: $color-danger-text;
+  margin-bottom: $space-4;
+}
+
+// ── Optional section ─────────────────────────────────────────────────────────
+
+.optional {
+  border-top: 1px solid #f1f5f9;
+  padding-top: $space-5;
+  margin-bottom: $space-5;
+
+  &__label {
+    @include section-label;
+    margin-bottom: $space-4;
+    display: block;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+    margin-bottom: $space-4;
+  }
+}
+
+// ── Form actions ─────────────────────────────────────────────────────────────
+
+.actions {
+  @apply flex;
+  gap: $space-3;
+
+  &__cancel {
+    @include btn-secondary;
+    @apply flex-1;
+    justify-content: center;
+    padding: 11px;
+  }
+
+  &__submit {
+    @include btn-primary;
+    @apply flex-1;
+    justify-content: center;
+    padding: 11px;
+    font-size: $text-base;
+    font-weight: 700;
+
+    &:disabled {
+      opacity: 0.7;
+    }
+  }
+}

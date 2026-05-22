@@ -1,0 +1,204 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.header {
+  @include flex-between;
+  flex-wrap: wrap;
+  gap: $space-4;
+  margin-bottom: $space-8;
+
+  &__title {
+    font-size: $text-4xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-md;
+    color: $color-muted;
+    margin-top: $space-1;
+    margin-bottom: 0;
+  }
+}
+
+.add-btn {
+  @include btn-primary;
+  padding: 10px 20px;
+}
+
+// ── Loading ─────────────────────────────────────────────────────────────────
+
+.loading {
+  @include flex-center;
+  height: 300px;
+
+  &__spinner {
+    @include spinner(40px, $color-primary);
+  }
+}
+
+// ── Empty state ──────────────────────────────────────────────────────────────
+
+.empty {
+  @include empty-state;
+
+  &__icon-box {
+    @include flex-center;
+    width: 72px;
+    height: 72px;
+    background: #f1f5f9;
+    border-radius: 18px;
+    margin-bottom: $space-5;
+  }
+
+  &__title {
+    font-size: 20px;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-2;
+  }
+
+  &__text {
+    font-size: $text-md;
+    color: $color-muted;
+    margin-bottom: 28px;
+  }
+
+  &__cta {
+    @include btn-primary;
+    padding: 10px 20px;
+  }
+}
+
+// ── Cards grid ───────────────────────────────────────────────────────────────
+
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: $space-5;
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.card-link {
+  text-decoration: none;
+  display: block;
+}
+
+.card {
+  @include card;
+  @include card-hover;
+  @apply overflow-hidden;
+  cursor: pointer;
+
+  // ── Image area ────────────────────────────────────────────────────────────
+
+  &__image-wrap {
+    position: relative;
+    height: 210px;
+    @apply overflow-hidden;
+
+    &--placeholder {
+      background: linear-gradient(135deg, $color-border, #cbd5e1);
+    }
+
+    &--photo {
+      background: $color-text;
+    }
+  }
+
+  &__image {
+    @apply w-full h-full;
+    object-fit: contain;
+  }
+
+  &__placeholder {
+    @include flex-center;
+    @apply w-full h-full;
+  }
+
+  &__year-badge {
+    position: absolute;
+    top: 12px;
+    left: 12px;
+    background: rgba(0, 0, 0, 0.55);
+    backdrop-filter: blur(4px);
+    color: #fff;
+    font-size: $text-xs;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: $radius-sm;
+  }
+
+  // ── Content area ──────────────────────────────────────────────────────────
+
+  &__content {
+    padding: 18px 20px 20px;
+  }
+
+  &__meta {
+    @include flex-between;
+    align-items: flex-start;
+    margin-bottom: $space-3;
+  }
+
+  &__title {
+    font-size: 19px;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__reg {
+    font-size: $text-sm;
+    color: $color-subtle;
+    font-family: monospace;
+    margin-top: 2px;
+    letter-spacing: 0.05em;
+  }
+
+  &__chevron {
+    color: $color-subtle;
+    @apply flex-shrink-0;
+  }
+
+  // ── Tags ──────────────────────────────────────────────────────────────────
+
+  &__tags {
+    @apply flex flex-wrap;
+    gap: 6px;
+  }
+
+  &__tag {
+    font-size: $text-xs;
+    font-weight: 600;
+    padding: 4px 10px;
+    border-radius: $radius-sm;
+
+    &--fuel {
+      background: #eff6ff;
+      color: #2563eb;
+    }
+
+    &--transmission {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    &--engine {
+      background: #f1f5f9;
+      color: #475569;
+    }
+
+    &--mileage {
+      background: #fff7ed;
+      color: #ea580c;
+    }
+  }
+}

@@ -1,0 +1,169 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.service-centers {
+  &__header {
+    margin-bottom: 28px;
+  }
+
+  &__title {
+    font-size: $text-4xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-md;
+    color: $color-muted;
+    margin-top: $space-1;
+    margin-bottom: 0;
+  }
+
+  &__filters {
+    @apply flex;
+    gap: 12px;
+    margin-bottom: $space-6;
+
+    @media (max-width: $bp-sm) {
+      flex-direction: column;
+    }
+  }
+
+  &__filter-city {
+    @include form-input;
+    @apply flex-1;
+    // override the w-full from mixin since we use flex-1
+    width: auto;
+  }
+
+  &__filter-category {
+    @include form-input;
+    width: auto;
+    min-width: 180px;
+
+    @media (max-width: $bp-sm) {
+      min-width: unset;
+      width: 100%;
+    }
+  }
+
+  &__loading {
+    @apply flex justify-center;
+    padding: 80px 0;
+  }
+
+  &__spinner {
+    @include spinner;
+  }
+
+  &__empty {
+    @include empty-state;
+  }
+
+  &__empty-title {
+    font-size: $text-lg;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0 0 6px;
+  }
+
+  &__empty-text {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+    gap: $space-4;
+  }
+
+  &__card-link {
+    text-decoration: none;
+    display: block;
+    height: 100%;
+  }
+
+  &__card {
+    @include card;
+    @include card-hover;
+    padding: 20px 22px;
+    height: 100%;
+    box-sizing: border-box;
+    cursor: pointer;
+  }
+
+  &__card-header {
+    @apply flex items-start justify-between;
+    margin-bottom: 14px;
+  }
+
+  &__card-icon {
+    @apply flex items-center justify-center;
+    flex-shrink: 0;
+    width: 42px;
+    height: 42px;
+    background: $color-info-bg;
+    border-radius: 12px;
+  }
+
+  &__card-chevron {
+    color: #cbd5e1;
+  }
+
+  &__card-name {
+    font-size: $text-lg;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-1;
+  }
+
+  &__card-location {
+    font-size: $text-sm;
+    color: $color-muted;
+    margin: 0 0 $space-2;
+  }
+
+  &__card-rating {
+    @apply flex items-center;
+    gap: $space-1;
+    margin-bottom: 12px;
+  }
+
+  &__card-rating-value {
+    font-size: 12px;
+    font-weight: 600;
+    color: $color-text-secondary;
+  }
+
+  &__card-rating-count {
+    font-size: 12px;
+    color: $color-subtle;
+  }
+
+  &__card-tags {
+    @apply flex flex-wrap;
+    gap: 6px;
+  }
+
+  &__card-tag {
+    font-size: $text-xs;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    background: #f1f5f9;
+    color: #475569;
+  }
+
+  &__card-tag--more {
+    font-size: $text-xs;
+    color: $color-subtle;
+    padding: 3px 0;
+  }
+}

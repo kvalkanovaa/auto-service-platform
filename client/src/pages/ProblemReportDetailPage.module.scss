@@ -1,0 +1,324 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+// ─── Loading ──────────────────────────────────────────────────────────────────
+.loading {
+  @include flex-center;
+  padding: 80px 0;
+}
+
+.loading__spinner {
+  @include spinner(40px);
+}
+
+// ─── Page wrapper ─────────────────────────────────────────────────────────────
+.page {
+  // inherits full width from Layout's .main
+}
+
+// ─── Header row ───────────────────────────────────────────────────────────────
+.header {
+  @apply flex items-center;
+  gap: $space-3;
+  margin-bottom: 28px;
+}
+
+.header__back {
+  @include back-btn;
+}
+
+.header__info {
+  @apply flex-1 min-w-0;
+}
+
+.header__title {
+  @include truncate;
+  font-size: $text-2xl;
+  font-weight: 700;
+  color: $color-text;
+  margin: 0;
+}
+
+.header__vehicle {
+  font-size: $text-base;
+  color: $color-muted;
+  margin-top: 2px;
+}
+
+.header__delete-btn {
+  @include btn-danger;
+  flex-shrink: 0;
+  padding: 8px $space-4;
+  font-size: $text-sm;
+}
+
+// ─── Two-column grid (when AI card is present) ────────────────────────────────
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-5;
+  align-items: start;
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.left-col {
+  @apply flex flex-col;
+  gap: $space-4;
+}
+
+.right-col {
+  @apply flex flex-col;
+  gap: $space-4;
+  position: sticky;
+  top: 80px;
+}
+
+// ─── Single-column fallback (no AI analysis) ──────────────────────────────────
+.stack {
+  @apply flex flex-col;
+  gap: $space-4;
+  max-width: 640px;
+}
+
+// ─── Description card ─────────────────────────────────────────────────────────
+.description-card {
+  @include card($radius-xl);
+  padding: $space-6;
+}
+
+.description-card__label {
+  @include section-label;
+  margin: 0 0 10px;
+}
+
+.description-card__text {
+  font-size: $text-base;
+  color: $color-text-secondary;
+  line-height: 1.65;
+  margin: 0;
+}
+
+// ─── Matched centres card ─────────────────────────────────────────────────────
+.centers-card {
+  @include card($radius-xl);
+  padding: $space-6;
+}
+
+.centers-card__header {
+  @apply flex items-center;
+  gap: $space-2;
+  margin-bottom: $space-4;
+}
+
+.centers-card__title {
+  font-size: $text-md;
+  font-weight: 700;
+  color: $color-text;
+  margin: 0;
+}
+
+.centers-card__subtitle {
+  font-size: 12px;
+  color: $color-muted;
+}
+
+.centers-card__list {
+  @apply flex flex-col;
+  gap: 10px;
+}
+
+// ─── Centre row ───────────────────────────────────────────────────────────────
+.center-row {
+  @include flex-between;
+  gap: $space-4;
+  padding: 14px $space-4;
+  border: 1px solid $color-border;
+  border-radius: 12px;
+  transition: border-color 0.18s ease;
+
+  &:hover {
+    border-color: $color-border-hover;
+  }
+}
+
+.center-row__info {
+  min-width: 0;
+}
+
+.center-row__name {
+  font-size: $text-md;
+  font-weight: 600;
+  color: $color-text;
+  margin: 0 0 2px;
+}
+
+.center-row__address {
+  font-size: $text-sm;
+  color: $color-muted;
+  margin: 0;
+}
+
+.center-row__rating {
+  @apply flex items-center;
+  gap: $space-1;
+  margin-top: $space-1;
+}
+
+.center-row__rating-value {
+  font-size: 12px;
+  font-weight: 600;
+  color: $color-text-secondary;
+}
+
+.center-row__rating-count {
+  font-size: 12px;
+  color: $color-subtle;
+}
+
+.center-row__book-btn {
+  @include btn-primary-dark;
+  flex-shrink: 0;
+  padding: 8px $space-4;
+  font-size: $text-sm;
+}
+
+// ─── AI Analysis card ─────────────────────────────────────────────────────────
+.ai-card {
+  @include card($radius-xl);
+  padding: $space-6;
+
+  &--low     { border-color: $color-success-border; }
+  &--medium  { border-color: $color-warning-border; }
+  &--high    { border-color: #fed7aa; }
+  &--critical { border-color: $color-danger-border; }
+}
+
+.ai-card__header {
+  @include flex-between;
+  margin-bottom: $space-5;
+  flex-wrap: wrap;
+  gap: $space-2;
+}
+
+.ai-card__title-row {
+  @apply flex items-center;
+  gap: $space-2;
+}
+
+.ai-card__title {
+  font-size: $text-md;
+  font-weight: 700;
+  color: $color-text;
+  margin: 0;
+}
+
+// ─── Refined badge ─────────────────────────────────────────────────────────────
+.ai-card__refined-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  background: $color-success-bg;
+  color: $color-success-text;
+  border: 1px solid $color-success-border;
+  font-size: 11px;
+  font-weight: 700;
+  padding: 3px 8px;
+  border-radius: $radius-full;
+  letter-spacing: 0.02em;
+}
+
+// ─── Urgency badges ───────────────────────────────────────────────────────────
+.ai-card__badge--low      { @include badge($color-success-bg, $color-success-text); }
+.ai-card__badge--medium   { @include badge($color-warning-bg, $color-warning-text); }
+.ai-card__badge--high     { @include badge(#fff7ed, #c2410c); }
+.ai-card__badge--critical { @include badge($color-danger-bg, $color-danger-text); }
+
+.ai-card__section {
+  margin-bottom: $space-4;
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+}
+
+.ai-card__section-label {
+  @include section-label;
+  margin: 0 0 8px;
+}
+
+.ai-card__summary {
+  font-size: $text-base;
+  color: $color-text-secondary;
+  line-height: 1.65;
+  margin: 0;
+}
+
+// ─── Category tags ────────────────────────────────────────────────────────────
+.categories {
+  @apply flex flex-wrap;
+  gap: $space-2;
+}
+
+.category-tag {
+  @include badge($color-info-bg, $color-info-text);
+}
+
+// ─── Follow-up conversation form ──────────────────────────────────────────────
+.followup-form {
+  @apply flex flex-col;
+  gap: $space-4;
+  margin-top: $space-2;
+}
+
+.followup-qa {
+  @apply flex flex-col;
+  gap: 6px;
+}
+
+.followup-qa__question {
+  font-size: $text-sm;
+  color: $color-text-secondary;
+  font-weight: 500;
+  margin: 0;
+  line-height: 1.5;
+}
+
+.followup-qa__input {
+  @include form-input;
+  resize: vertical;
+  min-height: 64px;
+  font-size: $text-sm;
+  line-height: 1.5;
+}
+
+.followup-error {
+  font-size: $text-sm;
+  color: $color-danger-text;
+  margin: 0;
+}
+
+.followup-btn {
+  @include btn-primary;
+  @apply w-full justify-center;
+  padding: 10px $space-4;
+  font-size: $text-sm;
+  font-weight: 700;
+  gap: $space-2;
+}
+
+.followup-btn__spinner {
+  width: 14px;
+  height: 14px;
+  border: 2px solid rgba(255, 255, 255, 0.35);
+  border-top-color: #fff;
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+  flex-shrink: 0;
+}

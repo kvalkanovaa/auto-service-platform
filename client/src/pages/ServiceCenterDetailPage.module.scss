@@ -1,0 +1,181 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.detail {
+  max-width: 640px;
+
+  &__loading {
+    @apply flex justify-center;
+    padding: 80px 0;
+  }
+
+  &__spinner {
+    @include spinner;
+  }
+
+  &__header {
+    @apply flex items-center;
+    gap: 12px;
+    margin-bottom: 28px;
+  }
+
+  &__back-btn {
+    @include back-btn;
+  }
+
+  &__header-info {
+    flex: 1;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: 2px;
+    margin-bottom: 0;
+  }
+
+  &__body {
+    @apply flex flex-col;
+    gap: $space-4;
+  }
+
+  // ── Info card ──────────────────────────────────────────────────────────────
+  &__info-card {
+    @include card;
+    padding: $space-6;
+  }
+
+  &__description {
+    font-size: $text-base;
+    color: $color-text-secondary;
+    line-height: 1.65;
+    margin: 0 0 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  &__info-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 16px 32px;
+    margin-bottom: 20px;
+
+    @media (max-width: $bp-sm) {
+      grid-template-columns: 1fr;
+      gap: 14px;
+    }
+  }
+
+  &__field-label {
+    @include section-label;
+    margin: 0 0 $space-1;
+  }
+
+  &__field-value {
+    font-size: $text-base;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__rating-row {
+    @apply flex items-center;
+    gap: 6px;
+    margin-bottom: 20px;
+    padding-bottom: 20px;
+    border-bottom: 1px solid #f1f5f9;
+  }
+
+  &__rating-value {
+    font-size: $text-md;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__rating-count {
+    font-size: $text-sm;
+    color: $color-subtle;
+  }
+
+  &__services-label {
+    @include section-label;
+    margin: 0 0 10px;
+  }
+
+  &__services-list {
+    @apply flex flex-wrap;
+    gap: $space-2;
+  }
+
+  &__service-badge {
+    @include badge($color-info-bg, $color-info-text);
+    font-size: 12px;
+    padding: 5px 12px;
+  }
+
+  // ── Slots card ─────────────────────────────────────────────────────────────
+  &__slots-card {
+    @include card;
+    padding: $space-6;
+  }
+
+  &__slots-title {
+    font-size: $text-lg;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-4;
+  }
+
+  &__slots-empty {
+    font-size: $text-base;
+    color: $color-subtle;
+    text-align: center;
+    padding: $space-6 0;
+    margin: 0;
+  }
+
+  &__slots-groups {
+    @apply flex flex-col;
+    gap: 20px;
+  }
+
+  &__date-label {
+    @include section-label;
+    margin: 0 0 10px;
+  }
+
+  &__date-slots {
+    @apply flex flex-wrap;
+    gap: $space-2;
+  }
+
+  &__slot-btn {
+    padding: 7px 16px;
+    font-size: $text-sm;
+    font-weight: 600;
+    border: 1px solid $color-border;
+    border-radius: $radius-md;
+    background: $color-surface;
+    color: $color-text-secondary;
+    cursor: pointer;
+    font-family: $font-family;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+    &:hover {
+      border-color: $color-accent;
+      color: $color-accent;
+      background: #fff7ed;
+    }
+  }
+}

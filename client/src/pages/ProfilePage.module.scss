@@ -1,0 +1,210 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.page {
+  max-width: 640px;
+  display: flex;
+  flex-direction: column;
+  gap: $space-6;
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+.header {
+  &__title {
+    font-size: $text-4xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-md;
+    color: $color-muted;
+    margin: $space-1 0 0;
+  }
+}
+
+// ── Avatar card ───────────────────────────────────────────────────────────────
+.avatar-card {
+  @include card;
+  padding: $space-6;
+  display: flex;
+  align-items: center;
+  gap: $space-6;
+
+  @media (max-width: $bp-sm) {
+    flex-direction: column;
+    text-align: center;
+  }
+}
+
+.avatar-wrap {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: $space-3;
+  flex-shrink: 0;
+}
+
+.avatar {
+  position: relative;
+  width: 80px;
+  height: 80px;
+  border-radius: 50%;
+  background: $color-primary;
+  overflow: hidden;
+  flex-shrink: 0;
+
+  &__img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+  }
+
+  &__initials {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #fff;
+    font-size: $text-2xl;
+    font-weight: 700;
+  }
+
+  &__uploading {
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    border-radius: 50%;
+  }
+
+  &__btn {
+    font-size: $text-sm;
+    font-weight: 600;
+    color: $color-primary;
+    background: transparent;
+    border: none;
+    cursor: pointer;
+    font-family: $font-family;
+    padding: 0;
+    text-decoration: underline;
+    text-underline-offset: 2px;
+
+    &:hover {
+      color: $color-primary-dark;
+    }
+
+    &:disabled {
+      opacity: 0.5;
+      cursor: not-allowed;
+    }
+  }
+
+  &__file-input {
+    display: none;
+  }
+}
+
+.avatar-info {
+  &__name {
+    font-size: $text-xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-1;
+  }
+
+  &__email {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0 0 $space-2;
+  }
+
+  &__role {
+    @include badge($color-info-bg, $color-info-text);
+  }
+}
+
+// ── Section card ──────────────────────────────────────────────────────────────
+.section-card {
+  @include card;
+  padding: $space-6;
+
+  &__title {
+    font-size: $text-xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-6;
+    padding-bottom: $space-4;
+    border-bottom: 1px solid $color-border;
+  }
+}
+
+// ── Fields ────────────────────────────────────────────────────────────────────
+.fields-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  margin-bottom: $space-4;
+
+  &__label {
+    @include form-label;
+  }
+
+  &__input {
+    @include form-input;
+    padding: 11px 14px;
+  }
+}
+
+// ── Alerts ────────────────────────────────────────────────────────────────────
+.alert {
+  &--error {
+    background: $color-danger-bg;
+    border: 1px solid $color-danger-border;
+    border-radius: $radius-md;
+    padding: 11px 14px;
+    font-size: $text-base;
+    color: $color-danger-text;
+    margin-bottom: $space-4;
+  }
+
+  &--success {
+    background: $color-success-bg;
+    border: 1px solid $color-success-border;
+    border-radius: $radius-md;
+    padding: 11px 14px;
+    font-size: $text-base;
+    color: $color-success-text;
+    margin-bottom: $space-4;
+  }
+}
+
+// ── Form footer ───────────────────────────────────────────────────────────────
+.form-footer {
+  display: flex;
+  justify-content: flex-end;
+}
+
+.save-btn {
+  @include btn-primary;
+  padding: 10px 24px;
+  font-size: $text-base;
+  font-weight: 700;
+
+  &:disabled {
+    background: $color-subtle;
+    box-shadow: none;
+    cursor: not-allowed;
+    transform: none;
+    opacity: 1;
+  }
+}

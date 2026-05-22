@@ -1,0 +1,252 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+@keyframes spin {
+  to { transform: rotate(360deg); }
+}
+
+.page {
+  max-width: 640px;
+}
+
+// ── Loading ───────────────────────────────────────────────────────────────────
+
+.loading {
+  @apply flex justify-center;
+  padding: 80px 0;
+
+  &__spinner {
+    @include spinner(40px, $color-primary);
+  }
+}
+
+// ── Header ────────────────────────────────────────────────────────────────────
+
+.header {
+  @apply flex items-center;
+  gap: $space-3;
+  margin-bottom: 28px;
+
+  &__back {
+    @include back-btn;
+  }
+
+  &__info {
+    flex: 1;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: 2px;
+    margin-bottom: 0;
+  }
+
+  &__actions {
+    @apply flex;
+    gap: $space-2;
+  }
+
+  &__edit-btn {
+    @include btn-secondary;
+    padding: 8px 16px;
+    font-size: $text-sm;
+  }
+
+  &__delete-btn {
+    @include btn-danger;
+    padding: 8px 16px;
+    font-size: $text-sm;
+
+    &:disabled {
+      opacity: 0.5;
+    }
+  }
+}
+
+// ── Main card ─────────────────────────────────────────────────────────────────
+
+.card {
+  @include card;
+  @apply overflow-hidden;
+}
+
+// ── View mode ─────────────────────────────────────────────────────────────────
+
+.vehicle-image {
+  @apply w-full;
+  height: 240px;
+  object-fit: cover;
+  display: block;
+}
+
+.info-grid {
+  padding: 28px;
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 20px 40px;
+}
+
+.field {
+  &__label {
+    @include section-label;
+    display: block;
+    margin: 0 0 $space-1;
+  }
+
+  &__value {
+    font-size: $text-md;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0;
+  }
+}
+
+// ── Edit form ─────────────────────────────────────────────────────────────────
+
+.edit-form {
+  padding: 28px;
+}
+
+.image-upload {
+  margin-bottom: $space-5;
+}
+
+.form-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+  margin-bottom: 14px;
+}
+
+.form-field {
+  &__label {
+    @include form-label;
+  }
+
+  &__input,
+  &__select {
+    @include form-input;
+  }
+}
+
+.vin-field {
+  margin-bottom: $space-5;
+}
+
+// ── Service history ───────────────────────────────────────────────────────────
+
+.history {
+  &__title {
+    font-size: $text-xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-4;
+  }
+
+  &__empty {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0;
+  }
+
+  &__list {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  &__item {
+    @include card;
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: $space-4;
+  }
+
+  &__item-left {
+    flex: 1;
+    min-width: 0;
+  }
+
+  &__badge {
+    display: inline-block;
+    font-size: 11px;
+    font-weight: 700;
+    padding: 3px 9px;
+    border-radius: $radius-full;
+    margin-bottom: 6px;
+
+    &--pending   { background: $color-warning-bg;  color: $color-warning-text; }
+    &--confirmed { background: $color-success-bg;  color: $color-success-text; }
+    &--cancelled { background: $color-danger-bg;   color: $color-danger-text;  }
+    &--completed { background: #f1f5f9;            color: #475569;             }
+  }
+
+  &__center {
+    font-size: $text-md;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0 0 2px;
+  }
+
+  &__location {
+    font-size: $text-sm;
+    color: $color-muted;
+    margin: 0;
+  }
+
+  &__date {
+    text-align: right;
+    flex-shrink: 0;
+
+    &-main {
+      font-size: $text-base;
+      font-weight: 600;
+      color: $color-text-secondary;
+      margin: 0;
+    }
+
+    &-time {
+      font-size: $text-sm;
+      color: $color-muted;
+      margin: 0;
+    }
+  }
+}
+
+// ── Edit form actions ─────────────────────────────────────────────────────────
+
+.form-actions {
+  @apply flex;
+  gap: $space-3;
+
+  &__cancel {
+    @include btn-secondary;
+    @apply flex-1;
+    justify-content: center;
+    padding: 11px;
+    font-size: $text-base;
+  }
+
+  &__save {
+    @include btn-primary;
+    @apply flex-1;
+    justify-content: center;
+    padding: 11px;
+    font-size: $text-base;
+    font-weight: 700;
+
+    &:disabled {
+      opacity: 0.7;
+    }
+  }
+}

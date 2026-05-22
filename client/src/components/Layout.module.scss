@@ -1,0 +1,423 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+// ─── Root wrapper ─────────────────────────────────────────────────────────────
+.layout {
+  @apply flex flex-col;
+  min-height: 100vh;
+  background: $color-bg;
+  font-family: $font-family;
+}
+
+// ─── Header ───────────────────────────────────────────────────────────────────
+.header {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  background: $color-surface;
+  border-bottom: 1px solid $color-border;
+  box-shadow: $shadow-xs;
+}
+
+.header__inner {
+  @apply flex items-center justify-between;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 $space-6;
+  height: 64px;
+}
+
+.header__left {
+  @apply flex items-center;
+  gap: 32px;
+}
+
+// ─── Logo ─────────────────────────────────────────────────────────────────────
+.logo {
+  @apply flex items-center no-underline;
+  gap: 10px;
+  text-decoration: none;
+}
+
+.logo__icon {
+  @include flex-center;
+  width: 36px;
+  height: 36px;
+  background: $color-primary;
+  border-radius: $radius-md;
+  flex-shrink: 0;
+}
+
+.logo__text {
+  font-weight: 700;
+  font-size: $text-xl;
+  color: $color-primary;
+  letter-spacing: -0.3px;
+}
+
+// ─── Navigation ───────────────────────────────────────────────────────────────
+.nav {
+  @apply flex items-center;
+  gap: $space-1;
+}
+
+.nav__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 7px 14px;
+  border-radius: $radius-sm;
+  font-size: $text-base;
+  font-weight: 500;
+  text-decoration: none;
+  transition: all 0.15s ease;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: $font-family;
+  color: $color-muted;
+
+  &--active {
+    background: $color-primary;
+    color: #fff;
+  }
+
+  &--admin {
+    color: $color-accent;
+
+    &.nav__link--active {
+      background: $color-accent;
+      color: #fff;
+    }
+  }
+
+  &--locked {
+    color: $color-subtle;
+    position: relative;
+
+    &:hover {
+      color: $color-primary;
+      background: $color-info-bg;
+    }
+  }
+}
+
+// ─── Header right (user area) ─────────────────────────────────────────────────
+.header__right {
+  @apply flex items-center;
+  gap: $space-3;
+}
+
+.user-badge {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  background: $color-bg;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  padding: 6px 14px 6px 8px;
+  text-decoration: none;
+  transition: border-color 0.15s ease;
+
+  &:hover {
+    border-color: $color-border-hover;
+  }
+}
+
+.user-badge__avatar {
+  @include flex-center;
+  width: 28px;
+  height: 28px;
+  background: $color-primary;
+  border-radius: 7px;
+  flex-shrink: 0;
+  overflow: hidden;
+}
+
+.user-badge__avatar-img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.user-badge__initials {
+  color: #fff;
+  font-size: $text-xs;
+  font-weight: 700;
+}
+
+.user-badge__name {
+  font-size: $text-base;
+  font-weight: 500;
+  color: $color-text-secondary;
+}
+
+.logout-btn {
+  padding: 8px 14px;
+  border-radius: $radius-sm;
+  font-size: $text-base;
+  font-weight: 500;
+  color: $color-muted;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: $font-family;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $color-text;
+  }
+}
+
+// ─── Main content ─────────────────────────────────────────────────────────────
+.main {
+  flex: 1;
+  width: 100%;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: $space-10 $space-6;
+  box-sizing: border-box;
+}
+
+// ─── Footer ───────────────────────────────────────────────────────────────────
+.footer__inner {
+  @apply flex items-center justify-between flex-wrap;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: $space-6;
+  gap: $space-4;
+  border-top: 1px solid $color-border;
+}
+
+.footer__brand {
+  @apply flex items-center;
+  gap: 10px;
+}
+
+.footer__icon {
+  @include flex-center;
+  width: 30px;
+  height: 30px;
+  background: $color-primary;
+  border-radius: $radius-sm;
+  flex-shrink: 0;
+}
+
+.footer__brand-name {
+  font-size: $text-base;
+  font-weight: 700;
+  color: $color-text;
+  margin: 0;
+}
+
+.footer__tagline {
+  font-size: 12px;
+  color: $color-subtle;
+  margin: 0;
+}
+
+.footer__right {
+  @apply flex items-center;
+  gap: 20px;
+}
+
+.footer__social-link {
+  @apply flex items-center no-underline;
+  gap: 7px;
+  color: $color-muted;
+  text-decoration: none;
+  font-size: $text-sm;
+  font-weight: 500;
+  transition: color 0.15s ease;
+
+  &--github:hover {
+    color: $color-text;
+  }
+
+  &--linkedin:hover {
+    color: #0a66c2;
+  }
+}
+
+.footer__divider {
+  width: 1px;
+  height: 16px;
+  background: $color-border;
+  flex-shrink: 0;
+}
+
+.footer__copyright {
+  font-size: 12px;
+  color: $color-subtle;
+  margin: 0;
+}
+
+// ─── Guest auth links (desktop) ───────────────────────────────────────────────
+.auth-links {
+  display: flex;
+  align-items: center;
+  gap: $space-2;
+
+  @media (max-width: $bp-lg) {
+    display: none;
+  }
+
+  &__login {
+    padding: 7px 14px;
+    border-radius: $radius-sm;
+    font-size: $text-base;
+    font-weight: 500;
+    color: $color-muted;
+    text-decoration: none;
+    transition: color 0.15s ease;
+
+    &:hover {
+      color: $color-text;
+    }
+  }
+
+  &__register {
+    @include btn-primary-dark;
+    padding: 7px 16px;
+    font-size: $text-base;
+  }
+}
+
+// ─── Mobile guest auth links ──────────────────────────────────────────────────
+.nav__mobile-auth-link {
+  font-size: $text-base;
+  font-weight: 500;
+  color: $color-muted;
+  text-decoration: none;
+
+  &--primary {
+    font-size: $text-base;
+    font-weight: 700;
+    color: $color-primary;
+    text-decoration: none;
+  }
+}
+
+// ─── Hamburger button (hidden on desktop) ─────────────────────────────────────
+.hamburger {
+  @include flex-center;
+  display: none;
+  width: 38px;
+  height: 38px;
+  background: transparent;
+  border: 1px solid $color-border;
+  border-radius: $radius-md;
+  cursor: pointer;
+  color: $color-text;
+  flex-shrink: 0;
+
+  @media (max-width: $bp-lg) {
+    display: flex;
+  }
+}
+
+// ─── Mobile nav dropdown ──────────────────────────────────────────────────────
+.nav__mobile-user {
+  display: none;
+
+  @media (max-width: $bp-lg) {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    margin-top: $space-2;
+    padding-top: $space-3;
+    border-top: 1px solid $color-border;
+  }
+}
+
+.nav__mobile-user-name {
+  font-size: $text-base;
+  font-weight: 500;
+  color: $color-text-secondary;
+  text-decoration: none;
+}
+
+.nav__mobile-logout {
+  font-size: $text-sm;
+  font-weight: 600;
+  color: $color-danger-text;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  font-family: $font-family;
+  padding: 0;
+}
+
+// ─── Responsive overrides ─────────────────────────────────────────────────────
+
+// Nav: hidden on mobile, shown as fixed dropdown when --open
+.nav {
+  @media (max-width: $bp-lg) {
+    display: none;
+    position: fixed;
+    top: 64px;
+    left: 0;
+    right: 0;
+    flex-direction: column;
+    align-items: stretch;
+    background: $color-surface;
+    border-bottom: 1px solid $color-border;
+    box-shadow: $shadow-md;
+    padding: 10px 16px 16px;
+    z-index: 45;
+
+    &--open {
+      display: flex;
+    }
+  }
+}
+
+.nav__link {
+  @media (max-width: $bp-lg) {
+    padding: 11px 14px;
+    font-size: $text-md;
+    border-radius: $radius-md;
+  }
+}
+
+// Hide desktop user area on mobile
+.user-badge {
+  @media (max-width: $bp-lg) {
+    display: none;
+  }
+}
+
+.logout-btn {
+  @media (max-width: $bp-lg) {
+    display: none;
+  }
+}
+
+// Main content: reduce padding on mobile
+.main {
+  @media (max-width: $bp-md) {
+    padding: $space-6 $space-4;
+  }
+
+  @media (max-width: $bp-sm) {
+    padding: $space-5 $space-4;
+  }
+}
+
+// Footer: stack on mobile
+.footer__inner {
+  @media (max-width: $bp-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-4;
+    padding: $space-5 $space-4;
+  }
+}
+
+.footer__right {
+  @media (max-width: $bp-sm) {
+    flex-wrap: wrap;
+    gap: $space-3;
+  }
+}
