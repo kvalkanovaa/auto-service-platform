@@ -69,7 +69,7 @@ cd ../client && npm install
 
 # Configure environment
 cp server/.env.example server/.env
-# Fill in: DATABASE_URL, JWT_SECRET, JWT_REFRESH_SECRET, GEMINI_API_KEY, CLOUDINARY_*, MAILTRAP_*
+# Fill in: MONGODB_URI, JWT_SECRET, JWT_REFRESH_SECRET, GEMINI_API_KEY, CLOUDINARY_*, MAILTRAP_*
 ```
 
 ### Run locally

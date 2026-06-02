@@ -6,8 +6,6 @@
 }
 
 .detail {
-  max-width: 640px;
-
   &__loading {
     @apply flex justify-center;
     padding: 80px 0;
@@ -46,8 +44,15 @@
   }
 
   &__body {
-    @apply flex flex-col;
-    gap: $space-4;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-6;
+    align-items: start;
+
+    @media (max-width: $bp-md) {
+      grid-template-columns: 1fr;
+      gap: $space-4;
+    }
   }
 
   // ── Info card ──────────────────────────────────────────────────────────────
@@ -128,6 +133,12 @@
   &__slots-card {
     @include card;
     padding: $space-6;
+    position: sticky;
+    top: $space-6;
+
+    @media (max-width: $bp-md) {
+      position: static;
+    }
   }
 
   &__slots-title {
