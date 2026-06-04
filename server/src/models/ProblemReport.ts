@@ -1,6 +1,6 @@
 import mongoose, { Schema } from 'mongoose';
 
-export type ReportStatus = 'open' | 'matched' | 'booked' | 'closed';
+export type ReportStatus = 'open' | 'booked' | 'closed';
 export type Urgency = 'low' | 'medium' | 'high' | 'critical';
 
 export interface IProblemReport {
@@ -15,19 +15,18 @@ export interface IProblemReport {
   aiQuestions?: string[];
   aiBriefForShop?: string;
   aiFollowupAnswers?: string[];
-  selectedServiceCenterId?: mongoose.Types.ObjectId;
   createdAt: Date;
 }
 
 const problemReportSchema = new Schema<IProblemReport>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    vehicleId: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    vehicleId: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true, index: true },
     title: { type: String, required: true, trim: true },
     description: { type: String, required: true, trim: true },
     status: {
       type: String,
-      enum: ['open', 'matched', 'booked', 'closed'],
+      enum: ['open', 'booked', 'closed'],
       default: 'open',
     },
     aiSummary: { type: String },
@@ -36,7 +35,6 @@ const problemReportSchema = new Schema<IProblemReport>(
     aiQuestions: [{ type: String }],
     aiBriefForShop: { type: String },
     aiFollowupAnswers: [{ type: String }],
-    selectedServiceCenterId: { type: Schema.Types.ObjectId, ref: 'ServiceCenter' },
   },
   { timestamps: true }
 );

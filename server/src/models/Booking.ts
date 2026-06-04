@@ -16,10 +16,10 @@ export interface IBooking {
 
 const bookingSchema = new Schema<IBooking>(
   {
-    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
-    vehicleId: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true },
-    serviceCenterId: { type: Schema.Types.ObjectId, ref: 'ServiceCenter', required: true },
-    problemReportId: { type: Schema.Types.ObjectId, ref: 'ProblemReport' },
+    userId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
+    vehicleId: { type: Schema.Types.ObjectId, ref: 'Vehicle', required: true, index: true },
+    serviceCenterId: { type: Schema.Types.ObjectId, ref: 'ServiceCenter', required: true, index: true },
+    problemReportId: { type: Schema.Types.ObjectId, ref: 'ProblemReport', index: true },
     slotId: { type: Schema.Types.ObjectId, ref: 'AvailableSlot', required: true },
     bookedDate: { type: String, required: true },
     bookedTime: { type: String, required: true },

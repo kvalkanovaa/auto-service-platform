@@ -17,7 +17,7 @@ export interface IVehicle {
 
 const vehicleSchema = new Schema<IVehicle>(
   {
-    ownerId: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    ownerId: { type: Schema.Types.ObjectId, ref: 'User', required: true, index: true },
     brand: { type: String, required: true, trim: true },
     model: { type: String, required: true, trim: true },
     year: { type: Number, required: true },

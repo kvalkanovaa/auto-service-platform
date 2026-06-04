@@ -13,7 +13,8 @@ export interface IServiceCenter {
   ratingAvg: number;
   reviewCount: number;
   isApproved: boolean;
-  createdBy: mongoose.Types.ObjectId;
+  applicationNote?: string;
+  createdBy?: mongoose.Types.ObjectId;
   createdAt: Date;
 }
 
@@ -35,9 +36,13 @@ const serviceCenterSchema = new Schema<IServiceCenter>(
     ratingAvg: { type: Number, default: 0 },
     reviewCount: { type: Number, default: 0 },
     isApproved: { type: Boolean, default: false },
-    createdBy: { type: Schema.Types.ObjectId, ref: 'User', required: true },
+    applicationNote: { type: String },
+    createdBy: { type: Schema.Types.ObjectId, ref: 'User' },
   },
   { timestamps: true }
 );
+
+// Публичният списък филтрира по одобрение и (по избор) по град.
+serviceCenterSchema.index({ isApproved: 1, city: 1 });
 
 export default mongoose.model<IServiceCenter>('ServiceCenter', serviceCenterSchema);

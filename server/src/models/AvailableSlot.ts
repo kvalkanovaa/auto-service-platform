@@ -17,4 +17,9 @@ const availableSlotSchema = new Schema<IAvailableSlot>(
   { timestamps: true }
 );
 
+// Бърза заявка за свободни часове на даден сервиз по дата.
+availableSlotSchema.index({ serviceCenterId: 1, date: 1, isBooked: 1 });
+// Гарантира, че няма дублиращи се часове (сервиз + дата + час) — защита от двойно резервиране.
+availableSlotSchema.index({ serviceCenterId: 1, date: 1, time: 1 }, { unique: true });
+
 export default mongoose.model<IAvailableSlot>('AvailableSlot', availableSlotSchema);
