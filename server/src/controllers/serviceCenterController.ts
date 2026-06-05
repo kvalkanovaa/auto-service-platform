@@ -6,7 +6,7 @@ import AvailableSlot from '../models/AvailableSlot';
 import { AuthRequest } from '../middleware/auth';
 import { AppError } from '../middleware/errorHandler';
 
-function buildSlots(centerId: mongoose.Types.ObjectId | string, daysAhead = 14) {
+export function buildSlots(centerId: mongoose.Types.ObjectId | string, daysAhead = 14) {
   const times = ['09:00', '10:00', '11:00', '13:00', '14:00', '15:00', '16:00'];
   const slots = [];
   const today = new Date();
@@ -58,6 +58,49 @@ export const matchServiceCenters = asyncHandler(async (req: Request, res: Respon
   if (city) filter.city = { $regex: city as string, $options: 'i' };
   const centers = await ServiceCenter.find(filter).sort({ ratingAvg: -1 }).limit(5);
   res.json(centers);
+});
+
+// Public: a service shop submits an application; created unapproved, awaiting admin review.
+export const applyServiceCenter = asyncHandler(async (req: Request, res: Response) => {
+  const { name, description, address, city, region, phone, email, servicesOffered, workingHours, applicationNote } = req.body;
+  if (!name || !description || !address || !city || !region || !phone || !email) {
+    const err: AppError = new Error('Моля, попълнете всички задължителни полета.');
+    err.statusCode = 400;
+    throw err;
+  }
+  const center = await ServiceCenter.create({
+    name, description, address, city, region, phone, email,
+    servicesOffered: Array.isArray(servicesOffered) ? servicesOffered : [],
+    workingHours: workingHours ?? undefined,
+    applicationNote: applicationNote || undefined,
+    isApproved: false,
+  });
+  res.status(201).json({ message: 'Заявката е получена и очаква одобрение.', id: center._id });
+});
+
+// Admin: list service centers awaiting approval.
+export const getPendingServiceCenters = asyncHandler(async (_req: AuthRequest, res: Response) => {
+  const centers = await ServiceCenter.find({ isApproved: false }).sort({ createdAt: -1 });
+  res.json(centers);
+});
+
+// Admin: approve a pending service center and generate its initial slots.
+export const approveServiceCenter = asyncHandler(async (req: AuthRequest, res: Response) => {
+  const center = await ServiceCenter.findById(req.params.id);
+  if (!center) {
+    const err: AppError = new Error('Сервизът не е намерен');
+    err.statusCode = 404;
+    throw err;
+  }
+  if (!center.isApproved) {
+    center.isApproved = true;
+    await center.save();
+    const existing = await AvailableSlot.countDocuments({ serviceCenterId: center._id });
+    if (existing === 0) {
+      await AvailableSlot.insertMany(buildSlots(center._id as mongoose.Types.ObjectId));
+    }
+  }
+  res.json(center);
 });
 
 export const adminCreateServiceCenter = asyncHandler(async (req: AuthRequest, res: Response) => {
