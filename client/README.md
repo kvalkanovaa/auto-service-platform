@@ -1,6 +1,6 @@
-# AutoService — Frontend
+# Diagnaut — Frontend
 
-React 19 + TypeScript + Vite client for the AutoService Platform.
+React 19 + TypeScript + Vite client for the Diagnaut Platform.
 
 ## Stack
 

@@ -63,11 +63,12 @@ export interface ServiceCenter {
   ratingAvg: number;
   reviewCount: number;
   isApproved: boolean;
+  applicationNote?: string;
   createdAt: string;
 }
 
 export type Urgency = 'low' | 'medium' | 'high' | 'critical';
-export type ReportStatus = 'open' | 'matched' | 'booked' | 'closed';
+export type ReportStatus = 'open' | 'booked' | 'closed';
 
 export interface ProblemReport {
   _id: string;
@@ -82,7 +83,6 @@ export interface ProblemReport {
   aiQuestions?: string[];
   aiBriefForShop?: string;
   aiFollowupAnswers?: string[];
-  selectedServiceCenterId?: string;
   createdAt: string;
 }
 

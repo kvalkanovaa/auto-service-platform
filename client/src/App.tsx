@@ -14,6 +14,9 @@ import ProblemReportNewPage from './pages/ProblemReportNewPage';
 import ProblemReportDetailPage from './pages/ProblemReportDetailPage';
 import ServiceCentersPage from './pages/ServiceCentersPage';
 import ServiceCenterDetailPage from './pages/ServiceCenterDetailPage';
+import ServiceCenterApplyPage from './pages/ServiceCenterApplyPage';
+import FaqPage from './pages/FaqPage';
+import ContactPage from './pages/ContactPage';
 import BookingsPage from './pages/BookingsPage';
 import BookingNewPage from './pages/BookingNewPage';
 import AdminPage from './pages/AdminPage';
@@ -42,6 +45,9 @@ function App() {
 
           <Route path="/service-centers" element={<ServiceCentersPage />} />
           <Route path="/service-centers/:id" element={<ServiceCenterDetailPage />} />
+          <Route path="/become-partner" element={<ServiceCenterApplyPage />} />
+          <Route path="/faq" element={<FaqPage />} />
+          <Route path="/contact" element={<ContactPage />} />
 
           <Route path="/bookings" element={<ProtectedRoute><BookingsPage /></ProtectedRoute>} />
           <Route path="/bookings/new" element={<ProtectedRoute><BookingNewPage /></ProtectedRoute>} />

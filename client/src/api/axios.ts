@@ -3,6 +3,18 @@
 
 const BASE = '/api';
 
+// Error thrown for non-2xx responses. Carries the HTTP status and the
+// server-provided message (parsed from the JSON body when available), so the
+// UI can show a meaningful message and branch on the status code.
+export class ApiError extends Error {
+  status: number;
+  constructor(status: number, message: string) {
+    super(message);
+    this.name = 'ApiError';
+    this.status = status;
+  }
+}
+
 let accessToken: string | null = null;
 
 export const setAccessToken = (token: string | null) => {
@@ -66,8 +78,17 @@ async function request<T>(
   }
 
   if (!res.ok) {
-    const msg = await res.text().catch(() => res.statusText);
-    throw new Error(`${res.status}: ${msg}`);
+    const raw = await res.text().catch(() => '');
+    let message = res.statusText;
+    if (raw) {
+      try {
+        const parsed = JSON.parse(raw) as { message?: string; error?: string };
+        message = parsed.message || parsed.error || raw;
+      } catch {
+        message = raw;
+      }
+    }
+    throw new ApiError(res.status, message);
   }
 
   // Parse JSON only if there is a body (204 No Content returns nothing)
