@@ -1,21 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { ApiError } from '../api/axios';
+import Logo from '../components/Logo';
+import { registerSchema, type RegisterForm } from '../validation/schemas';
 import styles from './RegisterPage.module.scss';
-
-const schema = z.object({
-  firstName: z.string().min(2, 'Минимум 2 символа').max(50, 'Максимум 50 символа'),
-  lastName: z.string().min(2, 'Минимум 2 символа').max(50, 'Максимум 50 символа'),
-  email: z.string().email('Невалиден email'),
-  password: z.string().min(6, 'Минимум 6 символа').max(100, 'Максимум 100 символа'),
-  confirmPassword: z.string(),
-}).refine((d) => d.password === d.confirmPassword, {
-  message: 'Паролите не съвпадат',
-  path: ['confirmPassword'],
-});
-type FormData = z.infer<typeof schema>;
 
 export default function RegisterPage() {
   const { register: registerUser } = useAuth();
@@ -23,15 +13,18 @@ export default function RegisterPage() {
   const location = useLocation();
   const fromLocked = !!(location.state as { fromLocked?: boolean } | null)?.fromLocked;
   const { register, handleSubmit, setError, formState: { errors, isSubmitting } } =
-    useForm<FormData>({ resolver: zodResolver(schema) });
+    useForm<RegisterForm>({ resolver: zodResolver(registerSchema) });
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: RegisterForm) => {
     try {
       await registerUser(data);
       navigate('/dashboard');
     } catch (err: unknown) {
-      const msg = (err as any)?.response?.data?.message;
-      setError('root', { message: msg ?? 'Грешка при регистрация' });
+      const message =
+        err instanceof ApiError && err.message
+          ? err.message
+          : 'Грешка при регистрация. Опитай отново.';
+      setError('root', { message });
     }
   };
 
@@ -41,12 +34,8 @@ export default function RegisterPage() {
 
         {/* Logo */}
         <div className={styles['register__logo']}>
-          <div className={styles['register__logo-icon']}>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-            </svg>
-          </div>
-          <span className={styles['register__logo-name']}>AutoService</span>
+          <Logo size={40} gid="lgRegister" />
+          <span className={styles['register__logo-name']}>Diagn<span style={{ color: '#f97316' }}>aut</span></span>
         </div>
 
         {/* Card */}

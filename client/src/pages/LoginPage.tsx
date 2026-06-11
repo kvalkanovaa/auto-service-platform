@@ -1,15 +1,11 @@
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
-import { z } from 'zod';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
+import { ApiError } from '../api/axios';
+import Logo from '../components/Logo';
+import { loginSchema, type LoginForm } from '../validation/schemas';
 import styles from './LoginPage.module.scss';
-
-const schema = z.object({
-  email: z.string().email('Невалиден email'),
-  password: z.string().min(6, 'Минимум 6 символа'),
-});
-type FormData = z.infer<typeof schema>;
 
 export default function LoginPage() {
   const { login } = useAuth();
@@ -17,18 +13,21 @@ export default function LoginPage() {
   const location = useLocation();
   const passwordReset = (location.state as { passwordReset?: boolean } | null)?.passwordReset;
   const { register, handleSubmit, setError, formState: { errors, isSubmitting } } =
-    useForm<FormData>({ resolver: zodResolver(schema) });
+    useForm<LoginForm>({ resolver: zodResolver(loginSchema) });
 
   const from = (location.state as { from?: { pathname: string; search?: string } } | null)?.from;
   const redirectTo = from ? `${from.pathname}${from.search ?? ''}` : '/dashboard';
 
-  const onSubmit = async (data: FormData) => {
+  const onSubmit = async (data: LoginForm) => {
     try {
       await login(data.email, data.password);
       navigate(redirectTo, { replace: true });
     } catch (err: unknown) {
-      const msg = (err as any)?.response?.data?.message;
-      setError('root', { message: msg ?? 'Грешни данни за вход' });
+      const message =
+        err instanceof ApiError && err.status === 429
+          ? 'Твърде много опити за вход. Опитай отново след минута.'
+          : 'Невалиден имейл или парола.';
+      setError('root', { message });
     }
   };
 
@@ -38,12 +37,8 @@ export default function LoginPage() {
 
         {/* Logo */}
         <div className={styles['login__logo']}>
-          <div className={styles['login__logo-icon']}>
-            <svg width="20" height="20" fill="none" viewBox="0 0 24 24" stroke="white" strokeWidth={2}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M8.25 18.75a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h6m-9 0H3.375a1.125 1.125 0 01-1.125-1.125V14.25m17.25 4.5a1.5 1.5 0 01-3 0m3 0a1.5 1.5 0 00-3 0m3 0h1.125c.621 0 1.129-.504 1.09-1.124a17.902 17.902 0 00-3.213-9.193 2.056 2.056 0 00-1.58-.86H14.25M16.5 18.75h-2.25m0-11.177v-.958c0-.568-.422-1.048-.987-1.106a48.554 48.554 0 00-10.026 0 1.106 1.106 0 00-.987 1.106v7.635m12-6.677v6.677m0 4.5v-4.5m0 0h-12" />
-            </svg>
-          </div>
-          <span className={styles['login__logo-name']}>AutoService</span>
+          <Logo size={40} gid="lgLogin" />
+          <span className={styles['login__logo-name']}>Diagn<span style={{ color: '#f97316' }}>aut</span></span>
         </div>
 
         {/* Card */}
