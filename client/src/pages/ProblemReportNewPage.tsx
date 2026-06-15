@@ -10,13 +10,16 @@ export default function ProblemReportNewPage() {
   const navigate = useNavigate();
   const [vehicles, setVehicles] = useState<Vehicle[]>([]);
   const [vehicleId, setVehicleId] = useState('');
+  const [loaded, setLoaded] = useState(false);
   const [title, setTitle] = useState('');
   const [description, setDescription] = useState('');
   const [isAnalyzing, setIsAnalyzing] = useState(false);
   const [error, setError] = useState('');
 
   useEffect(() => {
-    getVehiclesApi().then((v) => { setVehicles(v); if (v.length === 1) setVehicleId(v[0]._id); });
+    getVehiclesApi()
+      .then((v) => { setVehicles(v); if (v.length === 1) setVehicleId(v[0]._id); })
+      .finally(() => setLoaded(true));
   }, []);
 
   const handleAnalyze = async () => {
@@ -63,6 +66,16 @@ export default function ProblemReportNewPage() {
         </div>
 
         <div className={styles['stack']}>
+          {loaded && vehicles.length === 0 ? (
+          <div className={styles['form-card']} style={{ textAlign: 'center' }}>
+            <p style={{ fontSize: 15, color: '#475569', margin: '8px 0 18px' }}>
+              За да опишеш проблем, първо трябва да добавиш автомобил.
+            </p>
+            <Link to="/vehicles/new" className={styles['analyze-btn']} style={{ textDecoration: 'none', justifyContent: 'center' }}>
+              Добави кола
+            </Link>
+          </div>
+          ) : (
           <div className={styles['form-card']}>
             <div className={styles['form-card__field']}>
               <label className={styles['form-card__label']}>Автомобил</label>
@@ -118,6 +131,7 @@ export default function ProblemReportNewPage() {
               )}
             </button>
           </div>
+          )}
         </div>
       </div>
     </Layout>

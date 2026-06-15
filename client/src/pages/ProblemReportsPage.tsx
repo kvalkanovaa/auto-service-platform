@@ -3,13 +3,14 @@ import { Link } from 'react-router-dom';
 import { getReportsApi } from '../api/problemReports';
 import type { ProblemReport } from '../types';
 import Layout from '../components/Layout';
+import InfoBanner from '../components/InfoBanner';
 import styles from './ProblemReportsPage.module.scss';
 
 const urgencyLabels: Record<string, string> = {
   low: 'Нисък', medium: 'Среден', high: 'Висок', critical: 'Критичен',
 };
 const statusLabels: Record<string, string> = {
-  open: 'Отворен', matched: 'Съвпаднал', booked: 'Записан', closed: 'Затворен',
+  open: 'Отворен', booked: 'Записан', closed: 'Затворен',
 };
 
 export default function ProblemReportsPage() {
@@ -34,6 +35,11 @@ export default function ProblemReportsPage() {
           Нов проблем
         </Link>
       </div>
+
+      <InfoBanner
+        text="Опиши проблем със свои думи — изкуственият интелект разпознава вероятната причина, спешността и подходящите услуги, и предлага сервизи. После можеш да запазиш час."
+        steps={['Избери кола и опиши симптомите', 'Прегледай AI анализа', 'Запази час при препоръчан сервиз']}
+      />
 
       {isLoading ? (
         <div className={styles['loading']}>

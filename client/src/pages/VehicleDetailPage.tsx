@@ -117,6 +117,7 @@ export default function VehicleDetailPage() {
           )}
         </div>
 
+        <div className={`${styles['layout']}${isEditing ? ` ${styles['layout--editing']}` : ''}`}>
         <div className={styles['card']}>
           {!isEditing ? (
             <>
@@ -241,6 +242,7 @@ export default function VehicleDetailPage() {
               })}
             </div>
           )}
+        </div>
         </div>
 
       </div>

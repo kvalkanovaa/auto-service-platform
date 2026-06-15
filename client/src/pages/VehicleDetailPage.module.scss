@@ -6,7 +6,24 @@
 }
 
 .page {
-  max-width: 640px;
+  width: 100%;
+}
+
+// ── Two-column layout (vehicle info left, service history right) ────────────────
+.layout {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  gap: $space-6;
+  align-items: start;
+
+  &--editing {
+    grid-template-columns: 1fr;
+    max-width: 760px;
+  }
+
+  @media (max-width: $bp-lg) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // ── Loading ───────────────────────────────────────────────────────────────────

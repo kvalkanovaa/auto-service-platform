@@ -56,7 +56,8 @@ export default function VehicleNewPage() {
           </div>
         </div>
 
-        <div className={styles['card']}>
+        <div className={styles['layout']}>
+          <div className={styles['card']}>
           <form onSubmit={handleSubmit(onSubmit)}>
             <div className={styles['image-upload']}>
               <ImageUpload value={imageUrl} onChange={setImageUrl} />
@@ -64,34 +65,34 @@ export default function VehicleNewPage() {
 
             <div className={styles['form-grid']}>
               <div>
-                <label className={styles['field__label']}>Марка</label>
-                <input {...register('brand')} placeholder="BMW" className={styles['field__input']} />
+                <label className={styles['field__label']}>Марка <span className={styles['req']}>*</span></label>
+                <input {...register('brand')} placeholder="BMW" className={`${styles['field__input']}${errors.brand ? ` ${styles['field__input--error']}` : ''}`} />
                 {errors.brand && <p className={styles['field__error']}>{errors.brand.message}</p>}
               </div>
               <div>
-                <label className={styles['field__label']}>Модел</label>
-                <input {...register('model')} placeholder="320d" className={styles['field__input']} />
+                <label className={styles['field__label']}>Модел <span className={styles['req']}>*</span></label>
+                <input {...register('model')} placeholder="320d" className={`${styles['field__input']}${errors.model ? ` ${styles['field__input--error']}` : ''}`} />
                 {errors.model && <p className={styles['field__error']}>{errors.model.message}</p>}
               </div>
             </div>
 
             <div className={styles['form-grid']}>
               <div>
-                <label className={styles['field__label']}>Година</label>
-                <input {...register('year', { valueAsNumber: true })} type="number" placeholder="2020" className={styles['field__input']} />
+                <label className={styles['field__label']}>Година <span className={styles['req']}>*</span></label>
+                <input {...register('year', { valueAsNumber: true })} type="number" placeholder="2020" className={`${styles['field__input']}${errors.year ? ` ${styles['field__input--error']}` : ''}`} />
                 {errors.year && <p className={styles['field__error']}>{errors.year.message}</p>}
               </div>
               <div>
-                <label className={styles['field__label']}>Двигател</label>
-                <input {...register('engine')} placeholder="2.0 TDI" className={styles['field__input']} />
+                <label className={styles['field__label']}>Двигател <span className={styles['req']}>*</span></label>
+                <input {...register('engine')} placeholder="2.0 TDI" className={`${styles['field__input']}${errors.engine ? ` ${styles['field__input--error']}` : ''}`} />
                 {errors.engine && <p className={styles['field__error']}>{errors.engine.message}</p>}
               </div>
             </div>
 
             <div className={styles['form-grid']}>
               <div>
-                <label className={styles['field__label']}>Гориво</label>
-                <select {...register('fuelType')} className={styles['field__select']}>
+                <label className={styles['field__label']}>Гориво <span className={styles['req']}>*</span></label>
+                <select {...register('fuelType')} className={`${styles['field__select']}${errors.fuelType ? ` ${styles['field__select--error']}` : ''}`}>
                   <option value="">Избери...</option>
                   <option value="petrol">Бензин</option>
                   <option value="diesel">Дизел</option>
@@ -99,14 +100,16 @@ export default function VehicleNewPage() {
                   <option value="hybrid">Хибрид</option>
                   <option value="lpg">Газ (LPG)</option>
                 </select>
+                {errors.fuelType && <p className={styles['field__error']}>{errors.fuelType.message}</p>}
               </div>
               <div>
-                <label className={styles['field__label']}>Скоростна кутия</label>
-                <select {...register('transmission')} className={styles['field__select']}>
+                <label className={styles['field__label']}>Скоростна кутия <span className={styles['req']}>*</span></label>
+                <select {...register('transmission')} className={`${styles['field__select']}${errors.transmission ? ` ${styles['field__select--error']}` : ''}`}>
                   <option value="">Избери...</option>
                   <option value="manual">Ръчна</option>
                   <option value="automatic">Автоматична</option>
                 </select>
+                {errors.transmission && <p className={styles['field__error']}>{errors.transmission.message}</p>}
               </div>
             </div>
 
@@ -124,7 +127,7 @@ export default function VehicleNewPage() {
               </div>
               <div>
                 <label className={styles['field__label']}>VIN номер</label>
-                <input {...register('vin')} placeholder="WBA3A5G59DNP26082" className={styles['field__input']} />
+                <input {...register('vin')} placeholder="WBA3A5G59DNP26082" className={`${styles['field__input']}${errors.vin ? ` ${styles['field__input--error']}` : ''}`} />
                 {errors.vin && <p className={styles['field__error']}>{errors.vin.message}</p>}
               </div>
             </div>
@@ -146,6 +149,19 @@ export default function VehicleNewPage() {
               </button>
             </div>
           </form>
+          </div>
+
+          <aside className={styles['info']}>
+            <h3 className={styles['info__title']}>Защо да добавиш кола?</h3>
+            <ul className={styles['info__list']}>
+              <li className={styles['info__item']}>По-точна AI диагностика според марката, двигателя и годината</li>
+              <li className={styles['info__item']}>Бързи онлайн резервации — данните се попълват автоматично</li>
+              <li className={styles['info__item']}>История на проблемите и сервизирането на едно място</li>
+            </ul>
+            <div className={styles['info__note']}>
+              Полетата със <span className={styles['req']}>*</span> са задължителни. Останалите можеш да допълниш по-късно.
+            </div>
+          </aside>
         </div>
       </div>
     </Layout>

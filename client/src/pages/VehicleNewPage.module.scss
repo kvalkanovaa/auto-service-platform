@@ -2,7 +2,82 @@
 @use '../styles/mixins' as *;
 
 .page {
-  max-width: 640px;
+  max-width: 960px;
+}
+
+// ── Two-column layout (form + info aside) ──────────────────────────────────────
+.layout {
+  display: grid;
+  grid-template-columns: 1fr 300px;
+  gap: $space-6;
+  align-items: start;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
+}
+
+// ── Required asterisk ──────────────────────────────────────────────────────────
+.req {
+  color: #ef4444;
+  margin-left: 2px;
+  font-weight: 700;
+}
+
+// ── Info aside ─────────────────────────────────────────────────────────────────
+.info {
+  @include card;
+  padding: $space-5;
+  position: sticky;
+  top: $space-6;
+
+  @media (max-width: $bp-md) {
+    position: static;
+  }
+
+  &__title {
+    font-size: $text-base;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-4;
+  }
+
+  &__list {
+    list-style: none;
+    margin: 0 0 $space-4;
+    padding: 0;
+    display: flex;
+    flex-direction: column;
+    gap: $space-3;
+  }
+
+  &__item {
+    position: relative;
+    padding-left: 20px;
+    font-size: $text-sm;
+    color: $color-text-secondary;
+    line-height: 1.5;
+
+    &::before {
+      content: '';
+      position: absolute;
+      left: 2px;
+      top: 7px;
+      width: 6px;
+      height: 6px;
+      border-radius: $radius-full;
+      background: $color-accent;
+    }
+  }
+
+  &__note {
+    font-size: $text-xs;
+    color: $color-muted;
+    background: $color-bg;
+    border-radius: $radius-md;
+    padding: 10px 12px;
+    line-height: 1.5;
+  }
 }
 
 // ── Header ───────────────────────────────────────────────────────────────────
@@ -63,6 +138,16 @@
   &__input,
   &__select {
     @include form-input;
+  }
+
+  &__input--error,
+  &__select--error {
+    border-color: #ef4444;
+
+    &:focus {
+      border-color: #ef4444;
+      box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.12);
+    }
   }
 
   &__error {

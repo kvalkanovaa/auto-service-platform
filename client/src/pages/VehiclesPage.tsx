@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getVehiclesApi } from '../api/vehicles';
 import type { Vehicle } from '../types';
 import Layout from '../components/Layout';
+import InfoBanner from '../components/InfoBanner';
 import styles from './VehiclesPage.module.scss';
 
 const formatEngine = (engine: string) => {
@@ -43,6 +44,11 @@ export default function VehiclesPage() {
           Добави кола
         </Link>
       </div>
+
+      <InfoBanner
+        text="Тук управляваш автомобилите си. Добави кола веднъж и данните ѝ се използват автоматично при AI анализ на проблем и при резервация на час."
+        steps={['Добави автомобил', 'Опиши проблем или запази час', 'Следи сервизната история']}
+      />
 
       {isLoading ? (
         <div className={styles['loading']}>
