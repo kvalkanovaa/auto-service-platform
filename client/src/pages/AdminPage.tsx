@@ -3,53 +3,48 @@ import { useNavigate } from 'react-router-dom';
 import {
   getServiceCentersApi,
   createServiceCenterApi,
+  updateServiceCenterApi,
   deleteServiceCenterApi,
   refreshAllSlotsApi,
+  getPendingServiceCentersApi,
+  approveServiceCenterApi,
 } from '../api/serviceCenters';
 import type { ServiceCenter } from '../types';
 import { useAuth } from '../hooks/useAuth';
 import Layout from '../components/Layout';
+import ServiceCenterForm, { type ServiceCenterFormData } from '../components/ServiceCenterForm';
 import styles from './AdminPage.module.scss';
 
-const categoryOptions = [
-  { value: 'engine', label: 'Двигател' },
-  { value: 'diagnostics', label: 'Диагностика' },
-  { value: 'brakes', label: 'Спирачки' },
-  { value: 'suspension', label: 'Окачване' },
-  { value: 'tires', label: 'Гуми' },
-  { value: 'electrical', label: 'Електрика' },
-  { value: 'air-conditioning', label: 'Климатик' },
-  { value: 'bodywork', label: 'Каросерия' },
-  { value: 'transmission', label: 'Скоростна кутия' },
-  { value: 'oil-service', label: 'Маслена смяна' },
-];
+const sectionTitle: React.CSSProperties = { fontSize: 18, fontWeight: 700, color: '#0f172a', margin: '0 0 12px' };
 
-const dayOptions = [
-  { value: 'monday', label: 'Пон' },
-  { value: 'tuesday', label: 'Вт' },
-  { value: 'wednesday', label: 'Ср' },
-  { value: 'thursday', label: 'Чет' },
-  { value: 'friday', label: 'Пет' },
-  { value: 'saturday', label: 'Съб' },
-  { value: 'sunday', label: 'Нед' },
-];
-
-const emptyForm = {
-  name: '', description: '', address: '', city: '', region: '',
-  phone: '', email: '', open: '09:00', close: '18:00',
-  days: ['monday', 'tuesday', 'wednesday', 'thursday', 'friday'] as string[],
-  servicesOffered: [] as string[],
-};
+function toFormData(c: ServiceCenter): ServiceCenterFormData {
+  return {
+    name: c.name, description: c.description, address: c.address,
+    city: c.city, region: c.region, phone: c.phone, email: c.email,
+    servicesOffered: c.servicesOffered,
+    workingHours: c.workingHours,
+  };
+}
 
 export default function AdminPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
   const [centers, setCenters] = useState<ServiceCenter[]>([]);
   const [showForm, setShowForm] = useState(false);
-  const [form, setForm] = useState(emptyForm);
-  const [isSubmitting, setIsSubmitting] = useState(false);
   const [deletingId, setDeletingId] = useState<string | null>(null);
   const [isRefreshing, setIsRefreshing] = useState(false);
+  const [pending, setPending] = useState<ServiceCenter[]>([]);
+  const [actioningId, setActioningId] = useState<string | null>(null);
+  const [editingCenter, setEditingCenter] = useState<ServiceCenter | null>(null);
+
+  useEffect(() => {
+    if (user && user.role !== 'admin') navigate('/vehicles');
+  }, [user, navigate]);
+
+  useEffect(() => {
+    getServiceCentersApi({}).then(setCenters).catch((e) => console.error('Сервизи:', e));
+    getPendingServiceCentersApi().then(setPending).catch((e) => console.error('Чакащи заявки:', e));
+  }, []);
 
   const handleRefreshSlots = async () => {
     setIsRefreshing(true);
@@ -61,44 +56,32 @@ export default function AdminPage() {
     }
   };
 
-  useEffect(() => {
-    if (user && user.role !== 'admin') navigate('/vehicles');
-  }, [user, navigate]);
+  const handleCreate = async (d: ServiceCenterFormData) => {
+    const created = await createServiceCenterApi({
+      name: d.name, description: d.description, address: d.address,
+      city: d.city, region: d.region, phone: d.phone, email: d.email,
+      servicesOffered: d.servicesOffered,
+      workingHours: d.workingHours,
+    });
+    setCenters((prev) => [created, ...prev]);
+    setShowForm(false);
+  };
 
-  useEffect(() => {
-    getServiceCentersApi({}).then(setCenters);
-  }, []);
+  const handleUpdate = async (d: ServiceCenterFormData) => {
+    if (!editingCenter) return;
+    const updated = await updateServiceCenterApi(editingCenter._id, {
+      name: d.name, description: d.description, address: d.address,
+      city: d.city, region: d.region, phone: d.phone, email: d.email,
+      servicesOffered: d.servicesOffered, workingHours: d.workingHours,
+    });
+    setCenters((prev) => prev.map((c) => (c._id === updated._id ? updated : c)));
+    setEditingCenter(null);
+  };
 
-  const toggleCategory = (val: string) =>
-    setForm((f) => ({
-      ...f,
-      servicesOffered: f.servicesOffered.includes(val)
-        ? f.servicesOffered.filter((x) => x !== val)
-        : [...f.servicesOffered, val],
-    }));
-
-  const toggleDay = (val: string) =>
-    setForm((f) => ({
-      ...f,
-      days: f.days.includes(val) ? f.days.filter((x) => x !== val) : [...f.days, val],
-    }));
-
-  const handleSubmit = async () => {
-    setIsSubmitting(true);
-    try {
-      const created = await createServiceCenterApi({
-        name: form.name, description: form.description,
-        address: form.address, city: form.city, region: form.region,
-        phone: form.phone, email: form.email,
-        servicesOffered: form.servicesOffered,
-        workingHours: { open: form.open, close: form.close, days: form.days },
-      });
-      setCenters((prev) => [created, ...prev]);
-      setForm(emptyForm);
-      setShowForm(false);
-    } finally {
-      setIsSubmitting(false);
-    }
+  const startEdit = (c: ServiceCenter) => {
+    setShowForm(false);
+    setEditingCenter(c);
+    window.scrollTo({ top: 0, behavior: 'smooth' });
   };
 
   const handleDelete = async (id: string) => {
@@ -112,6 +95,28 @@ export default function AdminPage() {
     }
   };
 
+  const handleApprove = async (id: string) => {
+    setActioningId(id);
+    try {
+      const approved = await approveServiceCenterApi(id);
+      setPending((prev) => prev.filter((c) => c._id !== id));
+      setCenters((prev) => [approved, ...prev]);
+    } finally {
+      setActioningId(null);
+    }
+  };
+
+  const handleRejectPending = async (id: string) => {
+    if (!confirm('Да отхвърля ли тази заявка за сервиз?')) return;
+    setActioningId(id);
+    try {
+      await deleteServiceCenterApi(id);
+      setPending((prev) => prev.filter((c) => c._id !== id));
+    } finally {
+      setActioningId(null);
+    }
+  };
+
   return (
     <Layout>
       {/* Header */}
@@ -121,137 +126,95 @@ export default function AdminPage() {
           <p className={styles['admin__subtitle']}>Управление на сервизи</p>
         </div>
         <div style={{ display: 'flex', gap: 10 }}>
-        <button
-          onClick={handleRefreshSlots}
-          disabled={isRefreshing}
-          className={styles['admin__toggle-btn--open']}
-        >
-          {isRefreshing ? 'Зареждане...' : 'Обнови слотове'}
-        </button>
-        <button
-          onClick={() => setShowForm((v) => !v)}
-          className={showForm ? styles['admin__toggle-btn--open'] : styles['admin__toggle-btn']}
-        >
-          {!showForm && (
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
-            </svg>
-          )}
-          {showForm ? 'Затвори' : 'Нов сервиз'}
-        </button>
+          <button
+            onClick={handleRefreshSlots}
+            disabled={isRefreshing}
+            className={styles['admin__toggle-btn--open']}
+          >
+            {isRefreshing ? 'Зареждане...' : 'Обнови слотове'}
+          </button>
+          <button
+            onClick={() => {
+              if (editingCenter) setEditingCenter(null);
+              else setShowForm((v) => !v);
+            }}
+            className={(showForm || editingCenter) ? styles['admin__toggle-btn--open'] : styles['admin__toggle-btn']}
+          >
+            {!(showForm || editingCenter) && (
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+              </svg>
+            )}
+            {(showForm || editingCenter) ? 'Затвори' : 'Нов сервиз'}
+          </button>
         </div>
       </div>
 
-      {/* Create form */}
-      {showForm && (
-        <div className={styles['admin__form-card']}>
-          <h2 className={styles['admin__form-title']}>Нов сервиз</h2>
-
-          <div className={styles['admin__fields-grid']}>
-            {[
-              { key: 'name', label: 'Име' },
-              { key: 'city', label: 'Град' },
-              { key: 'region', label: 'Регион' },
-              { key: 'address', label: 'Адрес' },
-              { key: 'phone', label: 'Телефон' },
-              { key: 'email', label: 'Email' },
-            ].map(({ key, label }) => (
-              <div key={key} className={styles['admin__field']}>
-                <label className={styles['admin__label']}>{label}</label>
-                <input
-                  value={(form as any)[key]}
-                  onChange={(e) => setForm((f) => ({ ...f, [key]: e.target.value }))}
-                  className={styles['admin__input']}
-                />
-              </div>
-            ))}
-          </div>
-
-          <div className={styles['admin__textarea-wrap']}>
-            <label className={styles['admin__label']}>Описание</label>
-            <textarea
-              value={form.description}
-              onChange={(e) => setForm((f) => ({ ...f, description: e.target.value }))}
-              rows={3}
-              className={styles['admin__textarea']}
-            />
-          </div>
-
-          <div className={styles['admin__time-grid']}>
-            <div className={styles['admin__field']}>
-              <label className={styles['admin__label']}>Отваря</label>
-              <input
-                type="time"
-                value={form.open}
-                onChange={(e) => setForm((f) => ({ ...f, open: e.target.value }))}
-                className={styles['admin__input']}
-              />
-            </div>
-            <div className={styles['admin__field']}>
-              <label className={styles['admin__label']}>Затваря</label>
-              <input
-                type="time"
-                value={form.close}
-                onChange={(e) => setForm((f) => ({ ...f, close: e.target.value }))}
-                className={styles['admin__input']}
-              />
-            </div>
-          </div>
-
-          <div className={styles['admin__toggle-group-wrap']}>
-            <label className={styles['admin__label']}>Работни дни</label>
-            <div className={styles['admin__toggle-group']}>
-              {dayOptions.map(({ value, label }) => {
-                const active = form.days.includes(value);
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => toggleDay(value)}
-                    className={`${styles['admin__day-btn']}${active ? ` ${styles['admin__day-btn--active']}` : ''}`}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <div className={styles['admin__toggle-group-wrap--services']}>
-            <label className={styles['admin__label']}>Услуги</label>
-            <div className={styles['admin__toggle-group']}>
-              {categoryOptions.map(({ value, label }) => {
-                const active = form.servicesOffered.includes(value);
-                return (
-                  <button
-                    key={value}
-                    type="button"
-                    onClick={() => toggleCategory(value)}
-                    className={`${styles['admin__service-btn']}${active ? ` ${styles['admin__service-btn--active']}` : ''}`}
-                  >
-                    {label}
-                  </button>
-                );
-              })}
-            </div>
-          </div>
-
-          <button
-            onClick={handleSubmit}
-            disabled={isSubmitting}
-            className={styles['admin__submit-btn']}
-          >
-            {isSubmitting ? 'Запазване...' : 'Създай сервиз'}
-          </button>
+      {/* Create / edit form (shared component) */}
+      {(showForm || editingCenter) && (
+        <div style={{ marginBottom: 24 }}>
+          <h2 style={sectionTitle}>{editingCenter ? `Редактирай сервиз — ${editingCenter.name}` : 'Нов сервиз'}</h2>
+          <ServiceCenterForm
+            key={editingCenter?._id ?? 'new'}
+            initial={editingCenter ? toFormData(editingCenter) : undefined}
+            onSubmit={editingCenter ? handleUpdate : handleCreate}
+            submitLabel={editingCenter ? 'Запази промените' : 'Създай сервиз'}
+          />
         </div>
       )}
 
+      {/* Pending applications */}
+      <div style={{ marginBottom: 24 }}>
+        <h2 style={sectionTitle}>Чакащи заявки за одобрение ({pending.length})</h2>
+        {pending.length === 0 ? (
+          <div className={styles['admin__list-empty']}>
+            Няма чакащи заявки. Когато сервиз кандидатства през формата „Регистрирай сервиз", заявката се появява тук за преглед и одобрение.
+          </div>
+        ) : (
+          <div className={styles['admin__list']}>
+            {pending.map((c) => (
+              <div key={c._id} className={styles['admin__list-item']}>
+                <div className={styles['admin__item-left']}>
+                  <p className={styles['admin__item-name']}>{c.name}</p>
+                  <p className={styles['admin__item-location']}>{c.city} · {c.address}</p>
+                  <div className={styles['admin__item-meta']}>
+                    <span className={styles['admin__item-services']}>{c.servicesOffered.length} услуги</span>
+                    <span className={styles['admin__item-services']}>{c.phone}</span>
+                    <span className={styles['admin__item-services']}>{c.email}</span>
+                  </div>
+                  {c.applicationNote && (
+                    <p style={{ fontSize: 13, color: '#475569', marginTop: 6, fontStyle: 'italic' }}>
+                      „{c.applicationNote}“
+                    </p>
+                  )}
+                </div>
+                <div style={{ display: 'flex', gap: 8 }}>
+                  <button
+                    onClick={() => handleApprove(c._id)}
+                    disabled={actioningId === c._id}
+                    className={styles['admin__toggle-btn']}
+                  >
+                    {actioningId === c._id ? '...' : 'Одобри'}
+                  </button>
+                  <button
+                    onClick={() => handleRejectPending(c._id)}
+                    disabled={actioningId === c._id}
+                    className={styles['admin__delete-btn']}
+                  >
+                    Откажи
+                  </button>
+                </div>
+              </div>
+            ))}
+          </div>
+        )}
+      </div>
+
       {/* Centers list */}
+      <h2 style={sectionTitle}>Активни сервизи ({centers.length})</h2>
       <div className={styles['admin__list']}>
         {centers.length === 0 ? (
-          <div className={styles['admin__list-empty']}>
-            Няма добавени сервизи
-          </div>
+          <div className={styles['admin__list-empty']}>Няма добавени сервизи</div>
         ) : centers.map((c) => (
           <div key={c._id} className={styles['admin__list-item']}>
             <div className={styles['admin__item-left']}>
@@ -269,14 +232,22 @@ export default function AdminPage() {
                 )}
               </div>
             </div>
-            <button
-              onClick={() => handleDelete(c._id)}
-              disabled={deletingId === c._id}
-              className={styles['admin__delete-btn']}
-              style={{ opacity: deletingId === c._id ? 0.5 : undefined }}
-            >
-              {deletingId === c._id ? '...' : 'Изтрий'}
-            </button>
+            <div style={{ display: 'flex', gap: 8 }}>
+              <button
+                onClick={() => startEdit(c)}
+                className={styles['admin__toggle-btn']}
+              >
+                Редактирай
+              </button>
+              <button
+                onClick={() => handleDelete(c._id)}
+                disabled={deletingId === c._id}
+                className={styles['admin__delete-btn']}
+                style={{ opacity: deletingId === c._id ? 0.5 : undefined }}
+              >
+                {deletingId === c._id ? '...' : 'Изтрий'}
+              </button>
+            </div>
           </div>
         ))}
       </div>

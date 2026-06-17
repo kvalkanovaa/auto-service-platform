@@ -1,0 +1,110 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.form {
+  @include card;
+  padding: $space-6;
+}
+
+.grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+
+  @media (max-width: $bp-sm) {
+    grid-template-columns: 1fr;
+  }
+}
+
+.field {
+  margin-bottom: $space-4;
+}
+
+.label {
+  @include form-label;
+}
+
+.req {
+  color: $color-danger-text;
+}
+
+.optional {
+  color: $color-subtle;
+  font-weight: 400;
+}
+
+.input {
+  @include form-input;
+
+  &--error {
+    border-color: $color-danger-text;
+
+    &:focus {
+      border-color: $color-danger-text;
+      box-shadow: 0 0 0 3px $color-danger-bg;
+    }
+  }
+}
+
+.textarea {
+  @include form-input;
+  resize: vertical;
+  font-family: $font-family;
+}
+
+.field-error {
+  font-size: $text-sm;
+  color: $color-danger-text;
+  margin: 6px 0 0;
+}
+
+.time-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-4;
+}
+
+.toggle-wrap {
+  margin-bottom: $space-4;
+}
+
+.toggle-group {
+  @apply flex flex-wrap;
+  gap: $space-2;
+  margin-top: 6px;
+}
+
+.chip {
+  padding: 7px 14px;
+  font-size: $text-sm;
+  font-weight: 600;
+  border: 1px solid $color-border;
+  border-radius: $radius-full;
+  background: $color-surface;
+  color: $color-text-secondary;
+  cursor: pointer;
+  font-family: $font-family;
+  transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+  &--active {
+    border-color: $color-accent;
+    background: #fff7ed;
+    color: $color-accent;
+  }
+}
+
+.error {
+  background: $color-danger-bg;
+  color: $color-danger-text;
+  border: 1px solid $color-danger-border;
+  border-radius: $radius-md;
+  padding: 10px 14px;
+  font-size: $text-sm;
+  margin-bottom: $space-4;
+}
+
+.submit {
+  @include btn-primary;
+  width: 100%;
+  padding: 12px;
+}

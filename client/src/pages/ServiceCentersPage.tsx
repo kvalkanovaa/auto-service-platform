@@ -3,6 +3,7 @@ import { Link } from 'react-router-dom';
 import { getServiceCentersApi } from '../api/serviceCenters';
 import type { ServiceCenter } from '../types';
 import Layout from '../components/Layout';
+import InfoBanner from '../components/InfoBanner';
 import styles from './ServiceCentersPage.module.scss';
 
 const categoryLabels: Record<string, string> = {
@@ -32,6 +33,11 @@ export default function ServiceCentersPage() {
         <h1 className={styles['service-centers__title']}>Сервизи</h1>
         <p className={styles['service-centers__subtitle']}>Намери сервиз за твоя автомобил</p>
       </div>
+
+      <InfoBanner
+        text="Разгледай одобрените сервизи, филтрирай по град и услуга, виж рейтинг и свободни часове. Можеш да запазиш час със или без предварителен AI анализ на проблема."
+        steps={['Филтрирай по град или услуга', 'Отвори сервиз и виж детайли', 'Избери свободен час']}
+      />
 
       {/* Filters */}
       <div className={styles['service-centers__filters']}>

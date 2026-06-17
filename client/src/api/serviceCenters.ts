@@ -19,6 +19,27 @@ export const createServiceCenterApi = (data: {
   workingHours: { open: string; close: string; days: string[] };
 }) => api.post<ServiceCenter>('/service-centers', data);
 
+export const updateServiceCenterApi = (id: string, data: {
+  name: string; description: string; address: string; city: string; region: string;
+  phone: string; email: string; servicesOffered: string[];
+  workingHours: { open: string; close: string; days: string[] };
+}) => api.put<ServiceCenter>(`/service-centers/${id}`, data);
+
 export const deleteServiceCenterApi = (id: string) => api.delete(`/service-centers/${id}`);
 
 export const refreshAllSlotsApi = () => api.post('/service-centers/all/refresh-slots');
+
+// Public application by a service shop (created unapproved, awaiting admin review)
+export const applyServiceCenterApi = (data: {
+  name: string; description: string; address: string; city: string; region: string;
+  phone: string; email: string; servicesOffered: string[];
+  workingHours: { open: string; close: string; days: string[] };
+  applicationNote?: string;
+}) => api.post<{ message: string; id: string }>('/service-centers/apply', data);
+
+// Admin: pending applications + approve
+export const getPendingServiceCentersApi = () =>
+  api.get<ServiceCenter[]>('/service-centers/pending');
+
+export const approveServiceCenterApi = (id: string) =>
+  api.patch<ServiceCenter>(`/service-centers/${id}/approve`);

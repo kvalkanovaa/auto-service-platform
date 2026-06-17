@@ -1,0 +1,193 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.apply {
+  // широка версия (като админ панела), не тясна колона
+  width: 100%;
+
+  &__header {
+    margin-bottom: $space-6;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: $space-2;
+    margin-bottom: 0;
+    line-height: 1.6;
+  }
+
+  &__info {
+    @include card;
+    padding: $space-4 $space-5;
+    margin-bottom: $space-4;
+    background: $color-info-bg;
+    border-color: transparent;
+  }
+
+  &__info-title {
+    font-size: $text-sm;
+    font-weight: 700;
+    color: $color-info-text;
+    margin: 0 0 $space-2;
+    text-transform: uppercase;
+    letter-spacing: 0.05em;
+  }
+
+  &__info-steps {
+    margin: 0;
+    padding-left: 20px;
+    list-style: decimal;
+    color: $color-text-secondary;
+    font-size: $text-sm;
+    line-height: 1.8;
+
+    li::marker {
+      color: $color-info-text;
+      font-weight: 700;
+    }
+  }
+
+  &__card {
+    @include card;
+    padding: $space-6;
+  }
+
+  &__req {
+    color: $color-danger-text;
+  }
+
+  &__optional {
+    color: $color-subtle;
+    font-weight: 400;
+  }
+
+  &__grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+
+    @media (max-width: $bp-sm) {
+      grid-template-columns: 1fr;
+    }
+  }
+
+  &__field {
+    margin-bottom: $space-4;
+  }
+
+  &__label {
+    @include form-label;
+  }
+
+  &__input {
+    @include form-input;
+
+    &--error {
+      border-color: $color-danger-text;
+
+      &:focus {
+        border-color: $color-danger-text;
+        box-shadow: 0 0 0 3px $color-danger-bg;
+      }
+    }
+  }
+
+  &__textarea {
+    @include form-input;
+    resize: vertical;
+    font-family: $font-family;
+  }
+
+  &__field-error {
+    font-size: $text-sm;
+    color: $color-danger-text;
+    margin: 6px 0 0;
+  }
+
+  &__time-grid {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: $space-4;
+  }
+
+  &__toggle-wrap {
+    margin-bottom: $space-4;
+  }
+
+  &__toggle-group {
+    @apply flex flex-wrap;
+    gap: $space-2;
+    margin-top: 6px;
+  }
+
+  &__chip {
+    padding: 7px 14px;
+    font-size: $text-sm;
+    font-weight: 600;
+    border: 1px solid $color-border;
+    border-radius: $radius-full;
+    background: $color-surface;
+    color: $color-text-secondary;
+    cursor: pointer;
+    font-family: $font-family;
+    transition: border-color 0.15s ease, color 0.15s ease, background 0.15s ease;
+
+    &--active {
+      border-color: $color-accent;
+      background: #fff7ed;
+      color: $color-accent;
+    }
+  }
+
+  &__error {
+    background: $color-danger-bg;
+    color: $color-danger-text;
+    border: 1px solid $color-danger-border;
+    border-radius: $radius-md;
+    padding: 10px 14px;
+    font-size: $text-sm;
+    margin-bottom: $space-4;
+  }
+
+  &__submit {
+    @include btn-primary;
+    width: 100%;
+    padding: 12px;
+  }
+
+  // ── Success state ────────────────────────────────────────────────────────────
+  &__success-card {
+    @include card;
+    padding: 56px $space-6;
+    text-align: center;
+    max-width: 560px;
+    margin: 0 auto;
+  }
+
+  &__success-title {
+    font-size: $text-2xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-3;
+  }
+
+  &__success-text {
+    font-size: $text-base;
+    color: $color-muted;
+    margin: 0 0 $space-6;
+    line-height: 1.6;
+  }
+
+  &__success-link {
+    @include btn-primary-dark;
+    padding: 10px 20px;
+  }
+}

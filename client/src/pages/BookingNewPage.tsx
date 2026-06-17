@@ -101,6 +101,14 @@ export default function BookingNewPage() {
               <div>
                 <p className={styles['booking-new__slot-date']}>{slot.date} в {slot.time}</p>
                 <p className={styles['booking-new__slot-location']}>{center.city} · {center.address}</p>
+                <a
+                  href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${center.address}, ${center.city}`)}`}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  style={{ display: 'inline-flex', alignItems: 'center', gap: 4, marginTop: 6, fontSize: 13, fontWeight: 600, color: '#ea580c', textDecoration: 'none' }}
+                >
+                  Виж на картата →
+                </a>
               </div>
             </div>
           </div>
@@ -148,6 +156,11 @@ export default function BookingNewPage() {
                   </option>
                 ))}
               </select>
+              {reportId && (
+                <p style={{ fontSize: 12, color: '#64748b', marginTop: 6, marginBottom: 0 }}>
+                  AI анализът на избрания проблем ще бъде споделен със сервиза.
+                </p>
+              )}
             </div>
 
             <div className={styles['booking-new__field']}>

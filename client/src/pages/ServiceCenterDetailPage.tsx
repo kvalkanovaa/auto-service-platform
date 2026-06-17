@@ -1,8 +1,10 @@
 import { useEffect, useState } from 'react';
 import { useParams, Link, useNavigate, useSearchParams } from 'react-router-dom';
 import { getServiceCenterApi, getServiceCenterSlotsApi } from '../api/serviceCenters';
-import type { ServiceCenter, AvailableSlot } from '../types';
+import { getServiceCenterReviewsApi } from '../api/reviews';
+import type { ServiceCenter, AvailableSlot, Review } from '../types';
 import Layout from '../components/Layout';
+import BookingChoiceModal from '../components/BookingChoiceModal';
 import styles from './ServiceCenterDetailPage.module.scss';
 
 const categoryLabels: Record<string, string> = {
@@ -24,11 +26,14 @@ export default function ServiceCenterDetailPage() {
   const fromReportId = searchParams.get('reportId') ?? '';
   const [center, setCenter] = useState<ServiceCenter | null>(null);
   const [slots, setSlots] = useState<AvailableSlot[]>([]);
+  const [reviews, setReviews] = useState<Review[]>([]);
+  const [choiceSlot, setChoiceSlot] = useState<AvailableSlot | null>(null);
 
   useEffect(() => {
     if (!id) return;
     getServiceCenterApi(id).then(setCenter);
     getServiceCenterSlotsApi(id).then(setSlots);
+    getServiceCenterReviewsApi(id).then(setReviews);
   }, [id]);
 
   const slotsByDate = slots.reduce<Record<string, AvailableSlot[]>>((acc, slot) => {
@@ -91,6 +96,19 @@ export default function ServiceCenterDetailPage() {
               </div>
             </div>
 
+            <a
+              href={`https://www.google.com/maps/search/?api=1&query=${encodeURIComponent(`${center.address}, ${center.city}`)}`}
+              target="_blank"
+              rel="noopener noreferrer"
+              className={styles['detail__map-link']}
+            >
+              <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+                <path strokeLinecap="round" strokeLinejoin="round" d="M15 10.5a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 10.5c0 7.142-7.5 11.25-7.5 11.25S4.5 17.642 4.5 10.5a7.5 7.5 0 1115 0z" />
+              </svg>
+              Виж на картата
+            </a>
+
             {center.ratingAvg > 0 && (
               <div className={styles['detail__rating-row']}>
                 <svg width="16" height="16" fill="#facc15" viewBox="0 0 20 20">
@@ -127,7 +145,13 @@ export default function ServiceCenterDetailPage() {
                       {dateSlots.map((slot) => (
                         <button
                           key={slot._id}
-                          onClick={() => navigate(`/bookings/new?slotId=${slot._id}&centerId=${center._id}${fromReportId ? `&reportId=${fromReportId}` : ''}`)}
+                          onClick={() => {
+                            if (fromReportId) {
+                              navigate(`/bookings/new?slotId=${slot._id}&centerId=${center._id}&reportId=${fromReportId}`);
+                            } else {
+                              setChoiceSlot(slot);
+                            }
+                          }}
                           className={styles['detail__slot-btn']}
                         >
                           {slot.time}
@@ -140,7 +164,44 @@ export default function ServiceCenterDetailPage() {
             )}
           </div>
         </div>
+
+        {/* Reviews */}
+        <div className={styles['detail__reviews']}>
+          <h2 className={styles['detail__reviews-title']}>
+            Отзиви{reviews.length > 0 ? ` (${reviews.length})` : ''}
+          </h2>
+          {reviews.length === 0 ? (
+            <p className={styles['detail__reviews-empty']}>Все още няма отзиви за този сервиз.</p>
+          ) : (
+            <div className={styles['detail__reviews-list']}>
+              {reviews.map((r) => (
+                <div key={r._id} className={styles['detail__review']}>
+                  <div className={styles['detail__review-head']}>
+                    <span className={styles['detail__review-author']}>
+                      {r.userId?.firstName} {r.userId?.lastName}
+                    </span>
+                    <span className={styles['detail__review-stars']}>
+                      {'★'.repeat(r.rating)}{'☆'.repeat(5 - r.rating)}
+                    </span>
+                  </div>
+                  {r.comment && <p className={styles['detail__review-comment']}>{r.comment}</p>}
+                  <span className={styles['detail__review-date']}>
+                    {new Date(r.createdAt).toLocaleDateString('bg-BG')}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </div>
       </div>
+
+      <BookingChoiceModal
+        open={!!choiceSlot}
+        onClose={() => setChoiceSlot(null)}
+        onAnalyze={() => navigate('/problem-reports/new')}
+        onDirect={() => choiceSlot && navigate(`/bookings/new?slotId=${choiceSlot._id}&centerId=${center._id}`)}
+        directLabel="Запиши този час директно"
+      />
     </Layout>
   );
 }

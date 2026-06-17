@@ -189,4 +189,82 @@
       background: #fff7ed;
     }
   }
+
+  &__map-link {
+    @apply inline-flex items-center;
+    gap: 6px;
+    margin-bottom: 20px;
+    font-size: $text-sm;
+    font-weight: 600;
+    color: $color-accent;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  // ── Reviews ──────────────────────────────────────────────────────────────────
+  &__reviews {
+    @include card;
+    padding: $space-6;
+    margin-top: $space-6;
+  }
+
+  &__reviews-title {
+    font-size: $text-lg;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0 0 $space-4;
+  }
+
+  &__reviews-empty {
+    font-size: $text-base;
+    color: $color-subtle;
+    margin: 0;
+  }
+
+  &__reviews-list {
+    @apply flex flex-col;
+    gap: $space-4;
+  }
+
+  &__review {
+    padding-bottom: $space-4;
+    border-bottom: 1px solid #f1f5f9;
+
+    &:last-child {
+      padding-bottom: 0;
+      border-bottom: none;
+    }
+  }
+
+  &__review-head {
+    @include flex-between;
+    margin-bottom: 6px;
+  }
+
+  &__review-author {
+    font-size: $text-base;
+    font-weight: 700;
+    color: $color-text;
+  }
+
+  &__review-stars {
+    font-size: $text-base;
+    color: #facc15;
+    letter-spacing: 1px;
+  }
+
+  &__review-comment {
+    font-size: $text-base;
+    color: $color-text-secondary;
+    line-height: 1.6;
+    margin: 0 0 6px;
+  }
+
+  &__review-date {
+    font-size: $text-sm;
+    color: $color-subtle;
+  }
 }
