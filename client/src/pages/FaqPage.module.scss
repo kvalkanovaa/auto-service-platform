@@ -1,0 +1,70 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.faq {
+  max-width: 760px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: $space-6;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: $space-2;
+    margin-bottom: 0;
+  }
+
+  &__list {
+    @apply flex flex-col;
+    gap: $space-3;
+  }
+
+  &__item {
+    @include card;
+    padding: 0;
+    overflow: hidden;
+  }
+
+  &__question {
+    @apply flex items-center justify-between;
+    gap: $space-3;
+    padding: $space-4 $space-5;
+    font-size: $text-base;
+    font-weight: 600;
+    color: $color-text;
+    cursor: pointer;
+    list-style: none;
+    user-select: none;
+
+    &::-webkit-details-marker {
+      display: none;
+    }
+  }
+
+  &__chevron {
+    flex-shrink: 0;
+    color: $color-subtle;
+    transition: transform 0.2s ease;
+  }
+
+  &__item[open] &__chevron {
+    transform: rotate(180deg);
+  }
+
+  &__answer {
+    padding: 0 $space-5 $space-4;
+    margin: 0;
+    font-size: $text-base;
+    color: $color-text-secondary;
+    line-height: 1.65;
+  }
+}

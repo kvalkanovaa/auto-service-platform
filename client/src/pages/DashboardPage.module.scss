@@ -313,6 +313,67 @@
   }
 }
 
+// ─── How it works ──────────────────────────────────────────────────────────────
+.how {
+  @include card($radius-2xl);
+  padding: 32px 44px;
+  margin-top: 28px;
+  box-shadow: $shadow-sm;
+
+  &__title {
+    font-size: $text-xl;
+    font-weight: 800;
+    color: $color-text;
+    margin: 0 0 $space-5;
+  }
+
+  &__steps {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: $space-6;
+  }
+
+  &__step {
+    @apply flex;
+    gap: 14px;
+  }
+
+  &__num {
+    @include flex-center;
+    flex-shrink: 0;
+    width: 32px;
+    height: 32px;
+    border-radius: $radius-full;
+    background: linear-gradient(135deg, $color-primary, #1d4ed8);
+    color: #fff;
+    font-weight: 800;
+    font-size: $text-base;
+  }
+
+  &__step-title {
+    font-size: $text-base;
+    font-weight: 700;
+    color: $color-text;
+    margin: 4px 0 4px;
+  }
+
+  &__step-text {
+    font-size: $text-sm;
+    color: $color-muted;
+    margin: 0;
+    line-height: 1.55;
+  }
+
+  @media (max-width: $bp-md) {
+    padding: 28px 24px;
+
+    &__steps {
+      grid-template-columns: 1fr;
+      gap: $space-4;
+    }
+  }
+}
+
 // ─── Responsive ───────────────────────────────────────────────────────────────
 
 // Carousel: stack vertically on mobile

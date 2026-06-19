@@ -66,7 +66,7 @@
   align-items: center;
   gap: 5px;
   padding: 7px 14px;
-  border-radius: $radius-sm;
+  border-radius: $radius-md;
   font-size: $text-base;
   font-weight: 500;
   text-decoration: none;
@@ -77,28 +77,44 @@
   font-family: $font-family;
   color: $color-muted;
 
+  // hover ефект за ВСИЧКИ връзки (не само заключените)
+  &:hover {
+    background: $color-info-bg;
+    color: $color-primary;
+  }
+
   &--active {
     background: $color-primary;
     color: #fff;
+
+    &:hover {
+      background: $color-primary-dark;
+      color: #fff;
+    }
   }
 
   &--admin {
     color: $color-accent;
 
+    &:hover {
+      background: #fff7ed;
+      color: $color-accent;
+    }
+
     &.nav__link--active {
       background: $color-accent;
       color: #fff;
+
+      &:hover {
+        background: $color-accent-dark;
+        color: #fff;
+      }
     }
   }
 
   &--locked {
     color: $color-subtle;
     position: relative;
-
-    &:hover {
-      color: $color-primary;
-      background: $color-info-bg;
-    }
   }
 }
 
@@ -181,13 +197,17 @@
 }
 
 // ─── Footer ───────────────────────────────────────────────────────────────────
+.footer {
+  background: $color-surface; // изцяло бял, за да се отличава от сивия фон
+  box-shadow: 0 -10px 24px -18px rgba(15, 23, 42, 0.18); // мека сянка вместо линия
+}
+
 .footer__inner {
   @apply flex items-center justify-between flex-wrap;
   max-width: 1280px;
   margin: 0 auto;
   padding: $space-6;
   gap: $space-4;
-  border-top: 1px solid $color-border;
 }
 
 .footer__brand {
@@ -215,6 +235,69 @@
   font-size: 12px;
   color: $color-subtle;
   margin: 0;
+}
+
+.footer__nav {
+  @apply flex flex-wrap items-center;
+  gap: 18px;
+}
+
+.footer__nav-link {
+  font-size: $text-sm;
+  font-weight: 600;
+  color: $color-muted;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $color-text;
+  }
+
+  &--cta {
+    color: $color-accent;
+    font-weight: 700;
+
+    &:hover {
+      color: $color-accent;
+      opacity: 0.85;
+    }
+  }
+}
+
+.footer__contact-hours {
+  font-size: $text-sm;
+  color: $color-subtle;
+}
+
+.footer__bottom {
+  @apply flex items-center justify-between flex-wrap;
+  max-width: 1280px;
+  margin: 0 auto;
+  padding: 0 $space-6 $space-6;
+  gap: $space-4 $space-6;
+}
+
+.footer__contact {
+  @apply flex items-center flex-wrap;
+  gap: 18px;
+}
+
+.footer__contact-link {
+  @apply inline-flex items-center;
+  gap: 6px;
+  font-size: $text-sm;
+  color: $color-muted;
+  text-decoration: none;
+  transition: color 0.15s ease;
+
+  &:hover {
+    color: $color-text;
+  }
+}
+
+.footer__bottom-right {
+  @apply flex items-center;
+  gap: 16px;
 }
 
 .footer__right {
@@ -419,5 +502,14 @@
   @media (max-width: $bp-sm) {
     flex-wrap: wrap;
     gap: $space-3;
+  }
+}
+
+.footer__bottom {
+  @media (max-width: $bp-md) {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: $space-3;
+    padding: $space-4;
   }
 }

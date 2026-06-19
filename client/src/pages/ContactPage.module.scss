@@ -1,0 +1,126 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.contact {
+  max-width: 920px;
+  margin: 0 auto;
+
+  &__header {
+    margin-bottom: $space-6;
+  }
+
+  &__title {
+    font-size: $text-3xl;
+    font-weight: 700;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__subtitle {
+    font-size: $text-base;
+    color: $color-muted;
+    margin-top: $space-2;
+    margin-bottom: 0;
+  }
+
+  &__body {
+    display: grid;
+    grid-template-columns: 280px 1fr;
+    gap: $space-6;
+    align-items: start;
+
+    @media (max-width: $bp-md) {
+      grid-template-columns: 1fr;
+      gap: $space-4;
+    }
+  }
+
+  &__info {
+    @include card;
+    padding: $space-6;
+    display: flex;
+    flex-direction: column;
+    gap: $space-5;
+  }
+
+  &__info-label {
+    @include section-label;
+    margin: 0 0 4px;
+  }
+
+  &__info-value {
+    font-size: $text-base;
+    font-weight: 600;
+    color: $color-accent;
+    text-decoration: none;
+
+    &:hover {
+      text-decoration: underline;
+    }
+  }
+
+  &__info-text {
+    font-size: $text-base;
+    font-weight: 600;
+    color: $color-text;
+    margin: 0;
+  }
+
+  &__card {
+    @include card;
+    padding: $space-6;
+  }
+
+  &__field {
+    margin-bottom: $space-4;
+  }
+
+  &__label {
+    @include form-label;
+  }
+
+  &__input {
+    @include form-input;
+
+    &--error {
+      border-color: $color-danger-text;
+    }
+  }
+
+  &__textarea {
+    @include form-input;
+    resize: vertical;
+    font-family: $font-family;
+  }
+
+  &__field-error {
+    font-size: $text-sm;
+    color: $color-danger-text;
+    margin: 6px 0 0;
+  }
+
+  &__error {
+    background: $color-danger-bg;
+    color: $color-danger-text;
+    border: 1px solid $color-danger-border;
+    border-radius: $radius-md;
+    padding: 10px 14px;
+    font-size: $text-sm;
+    margin-bottom: $space-4;
+  }
+
+  &__success {
+    background: $color-success-bg;
+    color: $color-success-text;
+    border-radius: $radius-md;
+    padding: 16px;
+    font-size: $text-base;
+    text-align: center;
+  }
+
+  &__submit {
+    @include btn-primary;
+    width: 100%;
+    padding: 12px;
+  }
+}

@@ -1,7 +1,7 @@
 import { useRef, useState } from 'react';
 import { useAuth } from '../hooks/useAuth';
 import { updateProfileApi, changePasswordApi } from '../api/auth';
-import api from '../api/axios';
+import api, { ApiError } from '../api/axios';
 import Layout from '../components/Layout';
 import styles from './ProfilePage.module.scss';
 
@@ -28,6 +28,13 @@ export default function ProfilePage() {
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   const initials = `${user?.firstName?.[0] ?? ''}${user?.lastName?.[0] ?? ''}`.toUpperCase();
+
+  const profileChanged =
+    firstName.trim() !== (user?.firstName ?? '') ||
+    lastName.trim() !== (user?.lastName ?? '') ||
+    email.trim() !== (user?.email ?? '') ||
+    avatarUrl !== (user?.avatarUrl ?? '');
+  const passwordReady = !!(currentPassword && newPassword && confirmPassword);
 
   const handleAvatarChange = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -60,8 +67,8 @@ export default function ProfilePage() {
       updateUser(updated);
       setProfileSuccess(true);
     } catch (err: unknown) {
-      const msg = (err as Error).message;
-      setProfileError(msg.includes('409') ? 'Този email вече се използва' : 'Грешка при запазване');
+      const taken = err instanceof ApiError && err.status === 409;
+      setProfileError(taken ? 'Този email вече се използва' : 'Грешка при запазване');
     } finally {
       setProfileSaving(false);
     }
@@ -91,8 +98,8 @@ export default function ProfilePage() {
       setNewPassword('');
       setConfirmPassword('');
     } catch (err: unknown) {
-      const msg = (err as Error).message;
-      setPasswordError(msg.includes('400') ? 'Грешна текуща парола' : 'Грешка при смяна на паролата');
+      const badCurrent = err instanceof ApiError && err.status === 400;
+      setPasswordError(badCurrent ? 'Грешна текуща парола' : 'Грешка при смяна на паролата');
     } finally {
       setPasswordSaving(false);
     }
@@ -142,6 +149,7 @@ export default function ProfilePage() {
         </div>
 
         {/* Personal info */}
+        <div className={styles['cards-grid']}>
         <div className={styles['section-card']}>
           <h2 className={styles['section-card__title']}>Лична информация</h2>
           <form onSubmit={handleProfileSave}>
@@ -162,7 +170,7 @@ export default function ProfilePage() {
             {profileError && <div className={styles['alert--error']}>{profileError}</div>}
             {profileSuccess && <div className={styles['alert--success']}>Промените са запазени успешно.</div>}
             <div className={styles['form-footer']}>
-              <button type="submit" disabled={profileSaving} className={styles['save-btn']}>
+              <button type="submit" disabled={profileSaving || !profileChanged} className={styles['save-btn']}>
                 {profileSaving ? 'Запазване...' : 'Запази промените'}
               </button>
             </div>
@@ -190,11 +198,12 @@ export default function ProfilePage() {
             {passwordError && <div className={styles['alert--error']}>{passwordError}</div>}
             {passwordSuccess && <div className={styles['alert--success']}>Паролата е сменена успешно.</div>}
             <div className={styles['form-footer']}>
-              <button type="submit" disabled={passwordSaving} className={styles['save-btn']}>
+              <button type="submit" disabled={passwordSaving || !passwordReady} className={styles['save-btn']}>
                 {passwordSaving ? 'Запазване...' : 'Смени паролата'}
               </button>
             </div>
           </form>
+        </div>
         </div>
 
       </div>

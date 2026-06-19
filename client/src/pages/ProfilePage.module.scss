@@ -2,10 +2,22 @@
 @use '../styles/mixins' as *;
 
 .page {
-  max-width: 640px;
+  width: 100%;
   display: flex;
   flex-direction: column;
   gap: $space-6;
+}
+
+// ── Two cards side by side ──────────────────────────────────────────────────────
+.cards-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: $space-6;
+  align-items: start;
+
+  @media (max-width: $bp-md) {
+    grid-template-columns: 1fr;
+  }
 }
 
 // ── Header ────────────────────────────────────────────────────────────────────

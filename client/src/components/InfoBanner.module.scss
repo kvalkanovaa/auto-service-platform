@@ -1,0 +1,63 @@
+@use '../styles/variables' as *;
+@use '../styles/mixins' as *;
+
+.banner {
+  @apply flex;
+  gap: 14px;
+  background: $color-info-bg;
+  border: 1px solid #dbeafe;
+  border-radius: $radius-xl;
+  padding: 16px 20px;
+  margin-bottom: 24px;
+}
+
+.icon {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 36px;
+  height: 36px;
+  border-radius: $radius-md;
+  background: $color-surface;
+  color: $color-primary;
+}
+
+.body {
+  flex: 1;
+  min-width: 0;
+}
+
+.text {
+  font-size: $text-sm;
+  color: $color-text-secondary;
+  line-height: 1.55;
+  margin: 0;
+}
+
+.steps {
+  @apply flex;
+  flex-wrap: wrap;
+  gap: 8px 18px;
+  list-style: none;
+  margin: 12px 0 0;
+  padding: 0;
+}
+
+.step {
+  @apply inline-flex items-center;
+  gap: 8px;
+  font-size: $text-sm;
+  font-weight: 600;
+  color: $color-text;
+}
+
+.num {
+  @include flex-center;
+  flex-shrink: 0;
+  width: 22px;
+  height: 22px;
+  border-radius: $radius-full;
+  background: $color-primary;
+  color: #fff;
+  font-size: 12px;
+  font-weight: 800;
+}
