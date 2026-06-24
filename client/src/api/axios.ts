@@ -53,8 +53,19 @@ async function request<T>(
 
   let res = await fetch(url, init);
 
+  // Endpoints where a 401 means "wrong credentials / bad token in the body",
+  // NOT an expired access token. For these we must NOT run the refresh-and-retry
+  // dance — otherwise e.g. a wrong-password login triggers a redirect to /login
+  // that wipes the error message before it can be shown.
+  const isAuthEntryPoint =
+    path.includes('/auth/login') ||
+    path.includes('/auth/register') ||
+    path.includes('/auth/refresh') ||
+    path.includes('/auth/forgot-password') ||
+    path.includes('/auth/reset-password');
+
   // 401 → try to refresh the access token, then retry the original request
-  if (res.status === 401 && !path.includes('/auth/refresh')) {
+  if (res.status === 401 && !isAuthEntryPoint) {
     try {
       const refreshRes = await fetch(`${BASE}/auth/refresh`, {
         method: 'POST',
