@@ -2,7 +2,9 @@
 @use '../styles/mixins' as *;
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .page {
@@ -99,7 +101,7 @@
 
 .vehicle-image {
   @apply w-full;
-  height: 240px;
+  height: 350px;
   object-fit: cover;
   display: block;
 }
@@ -202,10 +204,22 @@
     border-radius: $radius-full;
     margin-bottom: 6px;
 
-    &--pending   { background: $color-warning-bg;  color: $color-warning-text; }
-    &--confirmed { background: $color-success-bg;  color: $color-success-text; }
-    &--cancelled { background: $color-danger-bg;   color: $color-danger-text;  }
-    &--completed { background: #f1f5f9;            color: #475569;             }
+    &--pending {
+      background: $color-warning-bg;
+      color: $color-warning-text;
+    }
+    &--confirmed {
+      background: $color-success-bg;
+      color: $color-success-text;
+    }
+    &--cancelled {
+      background: $color-danger-bg;
+      color: $color-danger-text;
+    }
+    &--completed {
+      background: #f1f5f9;
+      color: #475569;
+    }
   }
 
   &__center {
