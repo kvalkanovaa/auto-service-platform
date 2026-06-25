@@ -2,7 +2,9 @@
 @use '../styles/mixins' as *;
 
 @keyframes spin {
-  to { transform: rotate(360deg); }
+  to {
+    transform: rotate(360deg);
+  }
 }
 
 .bookings {
@@ -227,6 +229,39 @@
     font-size: $text-sm;
     font-weight: 600;
     color: $color-success-text;
+  }
+
+  // ── Show user review ──────────────────────────────────────────────
+  &__myreview {
+    margin-top: $space-4;
+    padding: 12px 14px;
+    background: #f0fdf4;
+    border: 1px solid #bbf7d0;
+    border-radius: 8px;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+  }
+
+  &__myreview-stars {
+    color: #f59e0b;
+    font-size: 16px;
+    letter-spacing: 1px;
+  }
+
+  &__myreview-label {
+    font-size: $text-sm;
+    font-weight: 600;
+    color: $color-success-text;
+  }
+
+  &__myreview-comment {
+    width: 100%;
+    margin: 4px 0 0;
+    font-size: $text-sm;
+    font-style: italic;
+    color: $color-text;
   }
 
   // ── Inline review form ───────────────────────────────────────────────────────

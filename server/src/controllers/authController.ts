@@ -46,7 +46,7 @@ export const register = asyncHandler(async (req: Request, res: Response) => {
 
   const exists = await User.findOne({ email: email.toLowerCase() });
   if (exists) {
-    const err: AppError = new Error('Email already in use');
+    const err: AppError = new Error('Имейл адресът вече е регистриран');
     err.statusCode = 409;
     throw err;
   }
@@ -96,7 +96,9 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 
   let payload: { id: string };
   try {
-    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as { id: string };
+    payload = jwt.verify(token, process.env.JWT_REFRESH_SECRET!) as {
+      id: string;
+    };
   } catch {
     const err: AppError = new Error('Invalid refresh token');
     err.statusCode = 401;
@@ -110,7 +112,10 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
     throw err;
   }
 
-  const { access, refresh: newRefresh } = issueTokens(user._id.toString(), user.role);
+  const { access, refresh: newRefresh } = issueTokens(
+    user._id.toString(),
+    user.role,
+  );
   user.refreshToken = newRefresh;
   await user.save();
 
@@ -119,7 +124,9 @@ export const refresh = asyncHandler(async (req: Request, res: Response) => {
 });
 
 export const me = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const user = await User.findById(req.user!.id).select('-password -refreshToken');
+  const user = await User.findById(req.user!.id).select(
+    '-password -refreshToken',
+  );
   if (!user) {
     const err: AppError = new Error('User not found');
     err.statusCode = 404;
@@ -131,105 +138,131 @@ export const me = asyncHandler(async (req: AuthRequest, res: Response) => {
 export const logout = asyncHandler(async (req: Request, res: Response) => {
   const token: string | undefined = req.cookies?.refreshToken;
   if (token) {
-    await User.findOneAndUpdate({ refreshToken: token }, { refreshToken: null });
+    await User.findOneAndUpdate(
+      { refreshToken: token },
+      { refreshToken: null },
+    );
   }
   res.clearCookie('refreshToken');
   res.json({ message: 'Logged out' });
 });
 
-export const updateProfile = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { firstName, lastName, email, avatarUrl } = req.body;
-  const user = await User.findById(req.user!.id);
-  if (!user) {
-    const err: AppError = new Error('User not found');
-    err.statusCode = 404;
-    throw err;
-  }
-
-  if (email && email !== user.email) {
-    const exists = await User.findOne({ email: email.toLowerCase(), _id: { $ne: user._id } });
-    if (exists) {
-      const err: AppError = new Error('Email вече се използва');
-      err.statusCode = 409;
+export const updateProfile = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { firstName, lastName, email, avatarUrl } = req.body;
+    const user = await User.findById(req.user!.id);
+    if (!user) {
+      const err: AppError = new Error('User not found');
+      err.statusCode = 404;
       throw err;
     }
-    user.email = email.toLowerCase().trim();
-  }
 
-  if (firstName) user.firstName = firstName.trim();
-  if (lastName) user.lastName = lastName.trim();
-  if (avatarUrl !== undefined) user.avatarUrl = avatarUrl || undefined;
+    if (email && email !== user.email) {
+      const exists = await User.findOne({
+        email: email.toLowerCase(),
+        _id: { $ne: user._id },
+      });
+      if (exists) {
+        const err: AppError = new Error('Email вече се използва');
+        err.statusCode = 409;
+        throw err;
+      }
+      user.email = email.toLowerCase().trim();
+    }
 
-  await user.save();
-  res.json(userPayload(user));
-});
+    if (firstName) user.firstName = firstName.trim();
+    if (lastName) user.lastName = lastName.trim();
+    if (avatarUrl !== undefined) user.avatarUrl = avatarUrl || undefined;
 
-export const changePassword = asyncHandler(async (req: AuthRequest, res: Response) => {
-  const { currentPassword, newPassword } = req.body;
-  const user = await User.findById(req.user!.id);
-  if (!user) {
-    const err: AppError = new Error('User not found');
-    err.statusCode = 404;
-    throw err;
-  }
+    await user.save();
+    res.json(userPayload(user));
+  },
+);
 
-  const valid = await user.comparePassword(currentPassword);
-  if (!valid) {
-    const err: AppError = new Error('Грешна текуща парола');
-    err.statusCode = 400;
-    throw err;
-  }
+export const changePassword = asyncHandler(
+  async (req: AuthRequest, res: Response) => {
+    const { currentPassword, newPassword } = req.body;
+    const user = await User.findById(req.user!.id);
+    if (!user) {
+      const err: AppError = new Error('User not found');
+      err.statusCode = 404;
+      throw err;
+    }
 
-  if (!newPassword || newPassword.length < 6) {
-    const err: AppError = new Error('Новата парола трябва да е поне 6 символа');
-    err.statusCode = 400;
-    throw err;
-  }
+    const valid = await user.comparePassword(currentPassword);
+    if (!valid) {
+      const err: AppError = new Error('Грешна текуща парола');
+      err.statusCode = 400;
+      throw err;
+    }
 
-  user.password = newPassword;
-  await user.save();
-  res.json({ message: 'Паролата е сменена успешно' });
-});
+    if (!newPassword || newPassword.length < 6) {
+      const err: AppError = new Error(
+        'Новата парола трябва да е поне 6 символа',
+      );
+      err.statusCode = 400;
+      throw err;
+    }
 
-export const forgotPassword = asyncHandler(async (req: Request, res: Response) => {
-  const { email } = req.body;
-  const user = await User.findOne({ email: email?.toLowerCase() });
+    user.password = newPassword;
+    await user.save();
+    res.json({ message: 'Паролата е сменена успешно' });
+  },
+);
 
-  // Always respond 200 so we don't leak whether an email is registered
-  if (!user) {
-    res.json({ message: 'Ако имейлът съществува, ще получиш линк за смяна на парола.' });
-    return;
-  }
+export const forgotPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const { email } = req.body;
+    const user = await User.findOne({ email: email?.toLowerCase() });
 
-  const token = crypto.randomBytes(32).toString('hex');
-  user.resetPasswordToken = crypto.createHash('sha256').update(token).digest('hex');
-  user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
-  await user.save();
+    // Always respond 200 so we don't leak whether an email is registered
+    if (!user) {
+      res.json({
+        message: 'Ако имейлът съществува, ще получиш линк за смяна на парола.',
+      });
+      return;
+    }
 
-  const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
-  await sendPasswordResetEmail(user.email, user.firstName, resetUrl);
+    const token = crypto.randomBytes(32).toString('hex');
+    user.resetPasswordToken = crypto
+      .createHash('sha256')
+      .update(token)
+      .digest('hex');
+    user.resetPasswordExpires = new Date(Date.now() + 60 * 60 * 1000); // 1 hour
+    await user.save();
 
-  res.json({ message: 'Ако имейлът съществува, ще получиш линк за смяна на парола.' });
-});
+    const resetUrl = `${process.env.CLIENT_URL}/reset-password/${token}`;
+    await sendPasswordResetEmail(user.email, user.firstName, resetUrl);
 
-export const resetPassword = asyncHandler(async (req: Request, res: Response) => {
-  const hashedToken = crypto.createHash('sha256').update(req.params.token).digest('hex');
+    res.json({
+      message: 'Ако имейлът съществува, ще получиш линк за смяна на парола.',
+    });
+  },
+);
 
-  const user = await User.findOne({
-    resetPasswordToken: hashedToken,
-    resetPasswordExpires: { $gt: new Date() },
-  });
+export const resetPassword = asyncHandler(
+  async (req: Request, res: Response) => {
+    const hashedToken = crypto
+      .createHash('sha256')
+      .update(req.params.token)
+      .digest('hex');
 
-  if (!user) {
-    const err: AppError = new Error('Линкът е невалиден или изтекъл');
-    err.statusCode = 400;
-    throw err;
-  }
+    const user = await User.findOne({
+      resetPasswordToken: hashedToken,
+      resetPasswordExpires: { $gt: new Date() },
+    });
 
-  user.password = req.body.password;
-  user.resetPasswordToken = undefined;
-  user.resetPasswordExpires = undefined;
-  await user.save();
+    if (!user) {
+      const err: AppError = new Error('Линкът е невалиден или изтекъл');
+      err.statusCode = 400;
+      throw err;
+    }
 
-  res.json({ message: 'Паролата е сменена успешно' });
-});
+    user.password = req.body.password;
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpires = undefined;
+    await user.save();
+
+    res.json({ message: 'Паролата е сменена успешно' });
+  },
+);

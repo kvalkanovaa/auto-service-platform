@@ -8,11 +8,23 @@ export const errorHandler = (
   err: AppError,
   _req: Request,
   res: Response,
-  _next: NextFunction
+  _next: NextFunction,
 ) => {
-  const statusCode = err.statusCode ?? 500;
+  let statusCode = err.statusCode ?? 500;
+  let message = err.message ?? 'Internal Server Error';
+
+  const mErr = err as AppError & {
+    name?: string;
+    errors?: Record<string, { message?: string }>;
+  };
+  if (mErr.name === 'ValidationError' && mErr.errors) {
+    statusCode = 400;
+    const first = Object.values(mErr.errors)[0];
+    message = first?.message ?? message;
+  }
+
   res.status(statusCode).json({
-    message: err.message ?? 'Internal Server Error',
+    message,
     ...(process.env.NODE_ENV === 'development' && { stack: err.stack }),
   });
 };

@@ -18,7 +18,7 @@ const schema = z.object({
   fuelType: z.enum(['petrol', 'diesel', 'electric', 'hybrid', 'lpg']),
   transmission: z.enum(['manual', 'automatic']),
   registrationNumber: z.string().optional(),
-  vin: z.string().optional(),
+  vin: z.string().optional().refine((v) => !v || v.length === 17, 'VIN е точно 17 символа'),
   mileage: z.number().min(0).optional(),
 });
 type FormData = z.infer<typeof schema>;
@@ -36,7 +36,7 @@ export default function VehicleDetailPage() {
   const [imageUrl, setImageUrl] = useState('');
   const [history, setHistory] = useState<Booking[]>([]);
 
-  const { register, handleSubmit, reset, formState: { isSubmitting } } = useForm<FormData>({ resolver: zodResolver(schema) });
+  const { register, handleSubmit, reset, formState: { isSubmitting, errors } } = useForm<FormData>({ resolver: zodResolver(schema) });
 
   useEffect(() => {
     if (!id) return;
@@ -193,7 +193,8 @@ export default function VehicleDetailPage() {
               </div>
               <div className={styles['vin-field']}>
                 <label className={styles['form-field__label']}>VIN</label>
-                <input {...register('vin')} className={styles['form-field__input']} />
+                <input {...register('vin')} className={`${styles['form-field__input']}${errors.vin ? ` ${styles['form-field__input--error']}` : ''}`} />
+                {errors.vin && <p className={styles['form-field__error']}>{errors.vin.message}</p>}
               </div>
               <div className={styles['form-actions']}>
                 <button

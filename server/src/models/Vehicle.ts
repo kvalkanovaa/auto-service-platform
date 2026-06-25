@@ -32,7 +32,14 @@ const vehicleSchema = new Schema<IVehicle>(
       enum: ['manual', 'automatic'],
       required: true,
     },
-    vin: { type: String, trim: true },
+    vin: {
+      type: String,
+      trim: true,
+      validate: {
+        validator: (v: string) => !v || v.length === 17,
+        message: 'VIN номерът трябва да е точно 17 символа',
+      },
+    },
     registrationNumber: { type: String, trim: true },
     mileage: { type: Number },
     imageUrl: { type: String },

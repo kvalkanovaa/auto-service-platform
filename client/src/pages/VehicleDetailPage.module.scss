@@ -154,6 +154,20 @@
   &__select {
     @include form-input;
   }
+
+  &__input--error {
+    border-color: #ef4444;
+
+    &:focus {
+      border-color: #ef4444;
+    }
+  }
+
+  &__error {
+    margin: 4px 0 0;
+    font-size: $text-sm;
+    color: #ef4444;
+  }
 }
 
 .vin-field {

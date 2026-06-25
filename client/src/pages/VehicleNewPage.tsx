@@ -34,7 +34,9 @@ export default function VehicleNewPage() {
   const onSubmit = async (data: FormData) => {
     try {
       await createVehicleApi({ ...data, mileage: data.mileage || undefined, imageUrl: imageUrl || undefined });
-      navigate('/vehicles');
+      navigate('/vehicles', {
+        state: { added: `${data.brand} ${data.model} (${data.year})` },
+      });
     } catch {
       setError('root', { message: 'Грешка при запазване' });
     }

@@ -21,7 +21,7 @@ export default function LoginPage() {
   const onSubmit = async (data: LoginForm) => {
     try {
       await login(data.email, data.password);
-      navigate(redirectTo, { replace: true });
+      navigate(redirectTo, { replace: true, state: { welcome: 'login' } });
     } catch (err: unknown) {
       const message =
         err instanceof ApiError && err.status === 429

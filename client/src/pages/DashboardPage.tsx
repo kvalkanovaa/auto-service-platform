@@ -1,7 +1,8 @@
 import { useEffect, useState } from 'react';
-import { Link, useNavigate } from 'react-router-dom';
+import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../hooks/useAuth';
 import Layout from '../components/Layout';
+import SuccessBanner from '../components/SuccessBanner';
 import styles from './DashboardPage.module.scss';
 
 const slides = [
@@ -99,9 +100,24 @@ const quickLinks = [
     bg: '#eff6ff',
     iconColor: '#1e3a5f',
     icon: (
-      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M5 11l1.5-3.8A2 2 0 018.4 6h7.2a2 2 0 011.9 1.2L19 11" />
-        <path strokeLinecap="round" strokeLinejoin="round" d="M3.5 11h17v3a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 14z" />
+      <svg
+        width="22"
+        height="22"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.8}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M5 11l1.5-3.8A2 2 0 018.4 6h7.2a2 2 0 011.9 1.2L19 11"
+        />
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M3.5 11h17v3a1.5 1.5 0 01-1.5 1.5H5A1.5 1.5 0 013.5 14z"
+        />
         <circle cx="8" cy="15.5" r="1.6" />
         <circle cx="16" cy="15.5" r="1.6" />
       </svg>
@@ -115,8 +131,19 @@ const quickLinks = [
     bg: '#fef3c7',
     iconColor: '#d97706',
     icon: (
-      <svg width="22" height="22" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={1.8}>
-        <path strokeLinecap="round" strokeLinejoin="round" d="M12 4l1.6 5.2a2 2 0 001.2 1.2L20 12l-5.2 1.6a2 2 0 00-1.2 1.2L12 20l-1.6-5.2a2 2 0 00-1.2-1.2L4 12l5.2-1.6a2 2 0 001.2-1.2z" />
+      <svg
+        width="22"
+        height="22"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={1.8}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M12 4l1.6 5.2a2 2 0 001.2 1.2L20 12l-5.2 1.6a2 2 0 00-1.2 1.2L12 20l-1.6-5.2a2 2 0 00-1.2-1.2L4 12l5.2-1.6a2 2 0 001.2-1.2z"
+        />
       </svg>
     ),
   },
@@ -178,8 +205,26 @@ const quickLinks = [
 export default function DashboardPage() {
   const { user } = useAuth();
   const navigate = useNavigate();
+  const location = useLocation();
   const [current, setCurrent] = useState(0);
   const [animating, setAnimating] = useState(false);
+
+  // Welcome banner state (shown after successful registration or login)
+  const [welcome, setWelcome] = useState<'register' | 'login' | null>(
+    () =>
+      (location.state as { welcome?: 'register' | 'login' } | null)?.welcome ??
+      null,
+  );
+  useEffect(() => {
+    // Clear the history state to prevent the banner from showing again on reload (without hiding the banner now)
+    if (location.state) window.history.replaceState({}, '');
+  }, []);
+  const welcomeText =
+    welcome === 'register'
+      ? `Регистрацията е успешна. Добре дошли в Diagnaut${user?.firstName ? ', ' + user.firstName : ''}!`
+      : welcome === 'login'
+        ? 'Успешен вход в системата.'
+        : '';
 
   useEffect(() => {
     const timer = setInterval(
@@ -201,6 +246,10 @@ export default function DashboardPage() {
 
   return (
     <Layout>
+      {welcome && (
+        <SuccessBanner text={welcomeText} onClose={() => setWelcome(null)} />
+      )}
+
       {/* ── CAROUSEL ── */}
       <div className={styles['carousel']}>
         {/* Slide panel — bg is a dynamic data-driven gradient, kept as inline style */}
@@ -305,11 +354,24 @@ export default function DashboardPage() {
         {quickLinks.map((q) => {
           const locked = q.requiresAuth && !user;
           const cardContent = (
-            <div className={`${styles['quick-links__card']}${locked ? ` ${styles['quick-links__card--locked']}` : ''}`}>
+            <div
+              className={`${styles['quick-links__card']}${locked ? ` ${styles['quick-links__card--locked']}` : ''}`}
+            >
               {locked && (
                 <div className={styles['quick-links__lock-badge']}>
-                  <svg width="10" height="10" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-                    <path strokeLinecap="round" strokeLinejoin="round" d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z" />
+                  <svg
+                    width="10"
+                    height="10"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                    stroke="currentColor"
+                    strokeWidth={2.5}
+                  >
+                    <path
+                      strokeLinecap="round"
+                      strokeLinejoin="round"
+                      d="M16.5 10.5V6.75a4.5 4.5 0 10-9 0v3.75m-.75 11.25h10.5a2.25 2.25 0 002.25-2.25v-6.75a2.25 2.25 0 00-2.25-2.25H6.75a2.25 2.25 0 00-2.25 2.25v6.75a2.25 2.25 0 002.25 2.25z"
+                    />
                   </svg>
                   Безплатно
                 </div>
@@ -328,13 +390,19 @@ export default function DashboardPage() {
           return locked ? (
             <button
               key={q.href}
-              onClick={() => navigate('/register', { state: { fromLocked: true } })}
+              onClick={() =>
+                navigate('/register', { state: { fromLocked: true } })
+              }
               className={styles['quick-links__link']}
             >
               {cardContent}
             </button>
           ) : (
-            <Link key={q.href} to={q.href} className={styles['quick-links__link']}>
+            <Link
+              key={q.href}
+              to={q.href}
+              className={styles['quick-links__link']}
+            >
               {cardContent}
             </Link>
           );
@@ -345,12 +413,25 @@ export default function DashboardPage() {
       <div className={styles['cta-banner']}>
         <div className={styles['cta-banner__body']}>
           <div className={styles['cta-banner__icon-box']}>
-            <svg width="26" height="26" fill="none" viewBox="0 0 24 24" stroke="#d97706" strokeWidth={1.8}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z" />
+            <svg
+              width="26"
+              height="26"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="#d97706"
+              strokeWidth={1.8}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 9v3.75m-9.303 3.376c-.866 1.5.217 3.374 1.948 3.374h14.71c1.73 0 2.813-1.874 1.948-3.374L13.949 3.378c-.866-1.5-3.032-1.5-3.898 0L2.697 16.126zM12 15.75h.007v.008H12v-.008z"
+              />
             </svg>
           </div>
           <div>
-            <p className={styles['cta-banner__title']}>Имате проблем с автомобила?</p>
+            <p className={styles['cta-banner__title']}>
+              Имате проблем с автомобила?
+            </p>
             <p className={styles['cta-banner__description']}>
               Опишете симптомите с няколко изречения — нашият AI анализира
               проблема, определя спешността и ви насочва към точния специалист.
@@ -359,15 +440,41 @@ export default function DashboardPage() {
         </div>
         {user ? (
           <Link to="/problem-reports/new" className={styles['cta-banner__btn']}>
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M12 4v16m8-8H4" />
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M12 4v16m8-8H4"
+              />
             </svg>
             Опиши проблема
           </Link>
         ) : (
-          <Link to="/register" state={{ fromLocked: true }} className={styles['cta-banner__btn']}>
-            <svg width="16" height="16" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2.5}>
-              <path strokeLinecap="round" strokeLinejoin="round" d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z" />
+          <Link
+            to="/register"
+            state={{ fromLocked: true }}
+            className={styles['cta-banner__btn']}
+          >
+            <svg
+              width="16"
+              height="16"
+              fill="none"
+              viewBox="0 0 24 24"
+              stroke="currentColor"
+              strokeWidth={2.5}
+            >
+              <path
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                d="M16 7a4 4 0 11-8 0 4 4 0 018 0zM12 14a7 7 0 00-7 7h14a7 7 0 00-7-7z"
+              />
             </svg>
             Регистрирай се безплатно
           </Link>
@@ -382,21 +489,29 @@ export default function DashboardPage() {
             <span className={styles['how__num']}>1</span>
             <div>
               <p className={styles['how__step-title']}>Опиши проблема</p>
-              <p className={styles['how__step-text']}>Разкажи със свои думи какво усещаш — звук, вибрация или лампа на таблото.</p>
+              <p className={styles['how__step-text']}>
+                Разкажи със свои думи какво усещаш — звук, вибрация или лампа на
+                таблото.
+              </p>
             </div>
           </div>
           <div className={styles['how__step']}>
             <span className={styles['how__num']}>2</span>
             <div>
               <p className={styles['how__step-title']}>AI анализ</p>
-              <p className={styles['how__step-text']}>Изкуственият интелект разпознава причината, спешността и подходящите услуги.</p>
+              <p className={styles['how__step-text']}>
+                Изкуственият интелект разпознава причината, спешността и
+                подходящите услуги.
+              </p>
             </div>
           </div>
           <div className={styles['how__step']}>
             <span className={styles['how__num']}>3</span>
             <div>
               <p className={styles['how__step-title']}>Резервирай час</p>
-              <p className={styles['how__step-text']}>Избери препоръчан сервиз и запази свободен час онлайн за минути.</p>
+              <p className={styles['how__step-text']}>
+                Избери препоръчан сервиз и запази свободен час онлайн за минути.
+              </p>
             </div>
           </div>
         </div>

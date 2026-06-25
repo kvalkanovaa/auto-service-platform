@@ -18,7 +18,7 @@ export default function RegisterPage() {
   const onSubmit = async (data: RegisterForm) => {
     try {
       await registerUser(data);
-      navigate('/dashboard');
+      navigate('/dashboard', { state: { welcome: 'register' } });
     } catch (err: unknown) {
       const message =
         err instanceof ApiError && err.message
