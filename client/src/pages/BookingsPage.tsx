@@ -257,13 +257,15 @@ export default function BookingsPage() {
                         >
                           {completing === b._id ? '...' : 'Завърши'}
                         </button>
-                        <button
-                          onClick={() => handleCancel(b._id)}
-                          disabled={cancelling === b._id}
-                          className={styles['bookings__cancel-btn']}
-                        >
-                          {cancelling === b._id ? '...' : 'Откажи'}
-                        </button>
+                        {!isPastBooking(b) && (
+                          <button
+                            onClick={() => handleCancel(b._id)}
+                            disabled={cancelling === b._id}
+                            className={styles['bookings__cancel-btn']}
+                          >
+                            {cancelling === b._id ? '...' : 'Откажи'}
+                          </button>
+                        )}
                       </>
                     )}
                     {b.status === 'completed' && !reviews[b._id] && (
